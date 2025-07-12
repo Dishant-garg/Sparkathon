@@ -4,7 +4,7 @@ const axios = require('axios');
 class NotificationService {
   constructor() {
     this.emailTransporter = null;
-    this.emailEnabled = false;
+    this.emailEnabled = true;
     this.initializeEmailTransporter();
   }
 
@@ -28,7 +28,7 @@ class NotificationService {
         return;
       }
 
-      this.emailTransporter = nodemailer.createTransporter({
+      this.emailTransporter = nodemailer.createTransport({
         service: 'gmail', // or your preferred email service
         auth: {
           user: emailUser,
@@ -40,7 +40,7 @@ class NotificationService {
       console.log('Email transporter initialized successfully');
     } catch (error) {
       console.error('Failed to initialize email transporter:', error.message);
-      this.emailEnabled = false;
+      // this.emailEnabled = false;
     }
   }
 
@@ -197,56 +197,64 @@ class NotificationService {
 
   /**
    * Format scan results for email
-   * @param {Object} scanResults - Scan results
+   * @param {Object|Array} scanResults - Scan results (single or array)
    * @returns {string} HTML formatted email body
    */
   formatScanResultsForEmail(scanResults) {
-    const { scanType, target, data, success, error, timestamp } = scanResults;
+    // If it's an array, format each result
+    const resultsArray = Array.isArray(scanResults) ? scanResults : [scanResults];
 
     let html = `
       <html>
         <body>
           <h2>Security Scan Results</h2>
-          <p><strong>Scan Type:</strong> ${scanType.toUpperCase()}</p>
-          <p><strong>Target:</strong> ${target}</p>
-          <p><strong>Timestamp:</strong> ${timestamp}</p>
-          <p><strong>Status:</strong> ${success ? '✅ Success' : '❌ Failed'}</p>
     `;
 
-    if (success && data) {
-      if (scanType === 'nmap' && data.scan) {
-        html += '<h3>Port Scan Results:</h3><ul>';
-        Object.keys(data.scan).forEach(host => {
-          const hostData = data.scan[host];
-          if (hostData.tcp) {
-            Object.keys(hostData.tcp).forEach(port => {
-              const portData = hostData.tcp[port];
-              html += `<li>Port ${port}: ${portData.state} (${portData.name})</li>`;
+    resultsArray.forEach((result, idx) => {
+      if (!result) return;
+      const { scanType, target, data, success, error, timestamp } = result;
+
+      html += `<hr/><h3>Result #${idx + 1}</h3>`;
+      html += `<p><strong>Scan Type:</strong> ${scanType ? scanType.toUpperCase() : 'N/A'}</p>`;
+      html += `<p><strong>Target:</strong> ${target || 'N/A'}</p>`;
+      html += `<p><strong>Timestamp:</strong> ${timestamp || 'N/A'}</p>`;
+      html += `<p><strong>Status:</strong> ${success ? '✅ Success' : '❌ Failed'}</p>`;
+
+      if (success && data) {
+        if (scanType === 'nmap' && data.scan) {
+          html += '<h4>Port Scan Results:</h4><ul>';
+          Object.keys(data.scan).forEach(host => {
+            const hostData = data.scan[host];
+            if (hostData.tcp) {
+              Object.keys(hostData.tcp).forEach(port => {
+                const portData = hostData.tcp[port];
+                html += `<li>Port ${port}: ${portData.state} (${portData.name})</li>`;
+              });
+            }
+          });
+          html += '</ul>';
+        } else if (scanType === 'gobuster') {
+          html += `<h4>Directory/File Scan Results:</h4>`;
+          html += `<p>Total findings: ${data.total_findings}</p>`;
+          if (data.directories_found && data.directories_found.length > 0) {
+            html += '<h5>Directories:</h5><ul>';
+            data.directories_found.forEach(dir => {
+              html += `<li>${dir}</li>`;
             });
+            html += '</ul>';
           }
-        });
-        html += '</ul>';
-      } else if (scanType === 'gobuster') {
-        html += `<h3>Directory/File Scan Results:</h3>`;
-        html += `<p>Total findings: ${data.total_findings}</p>`;
-        if (data.directories_found && data.directories_found.length > 0) {
-          html += '<h4>Directories:</h4><ul>';
-          data.directories_found.forEach(dir => {
-            html += `<li>${dir}</li>`;
-          });
-          html += '</ul>';
+          if (data.files_found && data.files_found.length > 0) {
+            html += '<h5>Files:</h5><ul>';
+            data.files_found.forEach(file => {
+              html += `<li>${file}</li>`;
+            });
+            html += '</ul>';
+          }
         }
-        if (data.files_found && data.files_found.length > 0) {
-          html += '<h4>Files:</h4><ul>';
-          data.files_found.forEach(file => {
-            html += `<li>${file}</li>`;
-          });
-          html += '</ul>';
-        }
+      } else if (error) {
+        html += `<p><strong>Error:</strong> ${error}</p>`;
       }
-    } else if (error) {
-      html += `<p><strong>Error:</strong> ${error}</p>`;
-    }
+    });
 
     html += `
         </body>

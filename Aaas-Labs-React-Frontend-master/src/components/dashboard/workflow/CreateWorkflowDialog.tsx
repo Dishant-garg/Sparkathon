@@ -78,6 +78,11 @@ const CreateWorkflowDialog = ({
 
       console.log("Created workflow:", createdWorkflow);
 
+      // Validate the created workflow has a valid ID
+      if (!createdWorkflow || !createdWorkflow.id || createdWorkflow.id === '') {
+        throw new Error('Invalid workflow ID received from server');
+      }
+
       setActiveWorkflow(createdWorkflow.id);
 
       // Success notification
@@ -85,12 +90,20 @@ const CreateWorkflowDialog = ({
         description: `${data.name} has been created successfully.`,
       });
 
-      // Close dialog and navigate
+      // Close dialog first
       onOpenChange(false);
-      navigate(`/workflow/${createdWorkflow.id}`);
+      
+      // Clear form
+      form.reset();
+      
+      // Navigate with a small delay to ensure state is updated
+      setTimeout(() => {
+        navigate(`/workflow/${createdWorkflow.id}`);
+      }, 100);
     } catch (error) {
+      console.error("Error creating workflow:", error);
       toast.error("Failed to create workflow", {
-        description: "An unexpected error occurred. Please try again.",
+        description: error instanceof Error ? error.message : "An unexpected error occurred. Please try again.",
       });
     } finally {
       setIsSubmitting(false);

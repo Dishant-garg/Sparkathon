@@ -19,7 +19,7 @@ import {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { toast } from "sonner";
-import { ArrowLeft, Save, Plus, Trash, X } from "lucide-react";
+import { ArrowLeft, Save, Plus, Trash, X, Play } from "lucide-react";
 import { useTheme } from "@/components/shared/ThemeProvider";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,6 +42,8 @@ import WorkflowNode from "@/components/workflowbuilder/WorkflowNode";
 import EmptyState from "@/components/dashboard/workflow/EmptyState";
 import NodeConfigDialog from "@/components/workflowbuilder/NodeConfigDialog";
 import { useWorkflowStore } from "@/lib/store";
+import { BACKEND_URL } from "@/lib/constant";
+import { workflowApi } from "@/hooks/useWorkflow";
 import {
   DataSource,
   Workflow,
@@ -98,7 +100,21 @@ const WorkflowBuilderContent = () => {
 
   useEffect(() => {
     const loadWorkflow = async () => {
-      if (id) {
+      // Validate workflow ID first
+      if (!id || id === 'undefined' || id === 'null' || id.trim() === '') {
+        toast.error("Invalid workflow ID");
+        navigate("/dashboard/workflow");
+        return;
+      }
+
+      // Check if ID looks like a valid MongoDB ObjectId (24 hex characters)
+      if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        toast.error("Invalid workflow ID format");
+        navigate("/dashboard/workflow");
+        return;
+      }
+
+      try {
         const found = workflows.find((w) => w.id === id);
 
         if (found) {
@@ -140,20 +156,18 @@ const WorkflowBuilderContent = () => {
             }
           } else {
             toast.error("Workflow not found");
-            navigate("/");
+            navigate("/dashboard/workflow");
           }
         }
-
-        const triggerNode = found?.nodes.find(
-          (node) => node.type === "trigger"
-        );
-
-        console.log(triggerNode);
+      } catch (error) {
+        console.error("Error loading workflow:", error);
+        toast.error("Failed to load workflow");
+        navigate("/dashboard/workflow");
       }
     };
 
     loadWorkflow();
-  }, []);
+  }, [id, workflows, fetchWorkflowById, setActiveWorkflow, setActiveDataSource, navigate]);
 
   const addTriggerNode = useCallback(() => {
     const newNode: WorkflowNodeType = {
@@ -430,7 +444,7 @@ const WorkflowBuilderContent = () => {
 
       console.log(updatedWorkflow);
 
-      await updateWorkflow(updatedWorkflow, user?.username);
+      await updateWorkflow(updatedWorkflow);
       setWorkflow(updatedWorkflow);
 
       toast.success("Workflow saved", {
@@ -439,6 +453,36 @@ const WorkflowBuilderContent = () => {
     } catch (error) {
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const executeWorkflow = async () => {
+    if (!workflow) return;
+
+    const validation = validateWorkflow();
+    if (!validation.valid) {
+      toast.error("Cannot execute workflow", {
+        description: validation.message,
+      });
+      return;
+    }
+
+    try {
+      console.log(`Executing workflow: ${workflow.id}`);
+      
+      const result = await workflowApi.executeWorkflow(workflow.id);
+      
+      toast.success("Workflow execution started", {
+        description: `Execution ID: ${result.executionId}. Check the Reports section for results.`,
+        duration: 5000
+      });
+
+      console.log('Workflow execution result:', result);
+    } catch (error) {
+      console.error('Error executing workflow:', error);
+      toast.error("Failed to execute workflow", {
+        description: error instanceof Error ? error.message : "An unexpected error occurred"
+      });
     }
   };
 
@@ -711,9 +755,19 @@ const WorkflowBuilderContent = () => {
               onClick={saveWorkflow}
               className="gap-1.5"
               disabled={isSaving || isLoading}
+              variant="outline"
             >
               <Save className="w-4 h-4" />
               {isSaving ? "Saving..." : "Save Workflow"}
+            </Button>
+
+            <Button
+              onClick={executeWorkflow}
+              className="gap-1.5"
+              disabled={isLoading}
+            >
+              <Play className="w-4 h-4" />
+              Execute Workflow
             </Button>
           </Panel>
 

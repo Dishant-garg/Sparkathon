@@ -8,6 +8,7 @@ import {
   MoreVertical,
   Edit,
   Trash,
+  Play,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -24,6 +25,8 @@ import {
 import CreateWorkflowDialog from "@/components/dashboard/workflow/CreateWorkflowDialog";
 import EmptyState from "@/components/dashboard/workflow/EmptyState";
 import { useWorkflowStore } from "@/lib/store";
+import { BACKEND_URL } from "@/lib/constant";
+import { workflowApi } from "@/hooks/useWorkflow";
 
 const Workflow = () => {
   const navigate = useNavigate();
@@ -68,6 +71,51 @@ const Workflow = () => {
     e.stopPropagation();
     setActiveWorkflow(id);
     navigate(`/workflow/${id}`);
+  };
+
+  const handleExecuteWorkflow = async (
+    id: string,
+    name: string,
+    e: React.MouseEvent
+  ) => {
+    e.stopPropagation();
+
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/workflows/${id}/execute`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({
+          error: "Unknown error",
+        }));
+        throw new Error(
+          errorData.error || `HTTP ${response.status}: Failed to execute workflow`
+        );
+      }
+
+      const result = await response.json();
+
+      toast.success("Workflow execution started", {
+        description: `"${name}" is now executing. Check Reports for results.`,
+        duration: 5000,
+      });
+
+      console.log("Workflow execution result:", result);
+    } catch (error) {
+      console.error("Error executing workflow:", error);
+      toast.error("Failed to execute workflow", {
+        description:
+          error instanceof Error ? error.message : "An unexpected error occurred",
+      });
+    }
   };
 
   const handleCardClick = (id: string) => {
@@ -187,6 +235,18 @@ const Workflow = () => {
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem
                                 onClick={(e) =>
+                                  handleExecuteWorkflow(
+                                    workflow.id,
+                                    workflow.name,
+                                    e as React.MouseEvent
+                                  )
+                                }
+                              >
+                                <Play className="mr-2 h-4 w-4" />
+                                Execute
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={(e) =>
                                   handleEditWorkflow(
                                     workflow.id,
                                     e as React.MouseEvent
@@ -225,6 +285,13 @@ const Workflow = () => {
                             variant="ghost"
                             size="sm"
                             className="text-xs group-hover:text-primary transition-colors hover:bg-transparent"
+                            onClick={(e) =>
+                              handleExecuteWorkflow(
+                                workflow.id,
+                                workflow.name,
+                                e as React.MouseEvent
+                              )
+                            }
                           >
                             Open workflow
                             <ArrowRight className="w-3.5 h-3.5 ml-1.5 transition-transform group-hover:translate-x-1" />

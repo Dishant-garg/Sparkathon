@@ -19,11 +19,35 @@ export const workflowApi = {
 
   getWorkflowById: async (id: string): Promise<Workflow> => {
     try {
+      // Validate ID before making request
+      if (!id || id === 'undefined' || id === 'null' || id.trim() === '') {
+        throw new Error("Invalid workflow ID provided");
+      }
+
+      if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new Error("Invalid workflow ID format");
+      }
+
       const response = await fetch(`${API_URL}/${id}`, {
         credentials: 'include'
       });
-      if (!response.ok) throw new Error("Failed to fetch workflow");
-      return await response.json();
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+        if (response.status === 404) {
+          throw new Error("Workflow not found");
+        }
+        throw new Error(errorData.error || `HTTP ${response.status}: Failed to fetch workflow`);
+      }
+      
+      const workflow = await response.json();
+      
+      // Validate response
+      if (!workflow || !workflow.id) {
+        throw new Error("Invalid workflow data received");
+      }
+      
+      return workflow;
     } catch (error) {
       console.error(`Error fetching workflow ${id}:`, error);
       throw error;
@@ -40,8 +64,23 @@ export const workflowApi = {
         credentials: 'include',
         body: JSON.stringify(workflow),
       });
-      if (!response.ok) throw new Error("Failed to create workflow");
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+        throw new Error(errorData.error || `HTTP ${response.status}: Failed to create workflow`);
+      }
+      
       const data = await response.json();
+      
+      // Validate response structure
+      if (!data.workflow) {
+        throw new Error("Invalid response: workflow data missing");
+      }
+      
+      if (!data.workflow.id || data.workflow.id === '') {
+        throw new Error("Invalid response: workflow ID missing or empty");
+      }
+      
       return data.workflow;
     } catch (error) {
       console.error("Error creating workflow:", error);
@@ -103,6 +142,19 @@ export const workflowApi = {
       return await response.json();
     } catch (error) {
       console.error(`Error getting execution status ${id}:`, error);
+      throw error;
+    }
+  },
+
+  getAllExecutionResults: async (): Promise<any> => {
+    try {
+      const response = await fetch(`${API_URL}/reports`, {
+        credentials: 'include'
+      });
+      if (!response.ok) throw new Error("Failed to get execution results");
+      return await response.json();
+    } catch (error) {
+      console.error("Error getting execution results:", error);
       throw error;
     }
   }

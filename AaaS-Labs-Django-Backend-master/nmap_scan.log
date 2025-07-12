@@ -1,0 +1,100 @@
+2025-02-28 18:47:40,024 - WARNING - Not Found: /
+2025-02-28 18:47:40,454 - WARNING - Not Found: /favicon.ico
+2025-02-28 18:47:50,021 - WARNING - Not Found: /api/nmap/
+2025-02-28 18:47:57,522 - WARNING - Method Not Allowed (GET): /api/nmap/scan_vulnerability/
+2025-02-28 18:49:28,691 - ERROR - Internal Server Error: /api/nmap/scan_vulnerability/
+2025-02-28 18:50:24,121 - ERROR - Internal Server Error: /api/nmap/scan_vulnerability/
+2025-02-28 18:51:16,252 - INFO - /app/AaaSLabs/urls.py changed, reloading.
+2025-02-28 18:53:19,963 - INFO - /app/ZeroVuln/views.py changed, reloading.
+2025-02-28 18:53:26,235 - INFO - /app/ZeroVuln/urls.py changed, reloading.
+2025-02-28 18:53:30,110 - INFO - /app/ZeroVuln/urls.py changed, reloading.
+2025-02-28 18:54:01,290 - INFO - /app/Gobuster/urls.py changed, reloading.
+2025-02-28 18:54:22,440 - INFO - /app/Gobuster/views.py changed, reloading.
+2025-02-28 18:55:54,696 - WARNING - Not Found: /api/nmap/scan_vulnerability/
+2025-02-28 18:55:59,457 - WARNING - Not Found: /api/
+2025-02-28 18:56:06,712 - WARNING - Not Found: /api/gobuster/
+2025-02-28 18:56:27,650 - INFO - /app/Gobuster/urls.py changed, reloading.
+2025-02-28 18:56:30,305 - WARNING - Not Found: /api/gobuster/
+2025-02-28 18:56:45,256 - ERROR - Internal Server Error: /api/gobuster/scan/
+2025-02-28 19:27:45,396 - ERROR - Internal Server Error: /api/gobuster/scan/
+2025-03-04 14:23:32,265 - ERROR - Internal Server Error: /api/gobuster/scan/
+2025-03-04 14:38:50,287 - INFO - /app/Gobuster/views.py changed, reloading.
+2025-03-04 14:39:09,644 - INFO - Starting vulnerability scan for https://prostructengineering.com/
+2025-03-04 14:39:09,648 - INFO - Running Gobuster for https://prostructengineering.com/
+2025-03-04 14:39:09,746 - ERROR - Gobuster scan failed: Error: error on parsing arguments: wordlist file "/usr/share/wordlists/dirbuster/directory-list-2.3-small.txt" does not exist: stat /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt: no such file or directory
+
+2025-03-04 14:39:09,747 - INFO - Vulnerability scan completed successfully
+2025-03-04 14:40:48,206 - INFO - /app/Gobuster/views.py changed, reloading.
+2025-03-04 14:40:57,311 - INFO - Starting vulnerability scan for https://prostructengineering.com/
+2025-03-04 14:40:57,313 - INFO - Running Gobuster for https://prostructengineering.com/
+2025-03-04 14:42:33,314 - INFO - Vulnerability scan completed successfully
+2025-03-04 14:43:59,781 - INFO - Starting vulnerability scan for https://prostructengineering.com/
+2025-03-04 14:43:59,781 - INFO - Running Gobuster for https://prostructengineering.com/
+2025-03-04 14:45:32,792 - INFO - Running Nikto scan
+2025-03-04 14:45:32,795 - INFO - Running Nikto scan on https://prostructengineering.com/
+2025-03-04 14:45:33,433 - WARNING - Nikto returned non-JSON output
+2025-03-04 14:45:33,434 - INFO - Running Nmap scan
+2025-03-04 14:47:41,015 - INFO - Running WPScan
+2025-03-04 14:47:50,656 - INFO - Vulnerability scan completed successfully
+2025-03-04 15:13:11,074 - INFO - /app/Gobuster/views.py changed, reloading.
+2025-03-04 15:13:14,400 - INFO - /app/Gobuster/views.py changed, reloading.
+2025-03-04 15:13:26,024 - INFO - Starting vulnerability scan for https://prostructengineering.com/
+2025-03-04 15:13:26,027 - INFO - Running Gobuster for https://prostructengineering.com/
+2025-03-04 15:14:59,325 - INFO - Running Nikto scan
+2025-03-04 15:14:59,325 - INFO - Running Nikto scan on https://prostructengineering.com/
+2025-03-04 15:14:59,678 - WARNING - Failed to read Nikto output: Expecting value: line 1 column 1 (char 0)
+2025-03-04 15:14:59,679 - INFO - Running Nmap scan
+2025-03-04 15:18:17,595 - INFO - Running WPScan
+2025-03-04 15:19:13,523 - INFO - Vulnerability scan completed successfully
+2025-03-04 15:46:09,652 - INFO - Starting vulnerability scan for https://tbbox.me/
+2025-03-04 15:46:09,659 - INFO - Running Gobuster for https://tbbox.me/
+2025-03-04 15:46:10,684 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://tbbox.me/4f72e603-5bf1-4fbf-af1b-967d5e0c6d4d => 200 (Length: 5198). To continue please exclude the status code or the length
+
+2025-03-04 15:46:10,686 - INFO - Running Nikto scan
+2025-03-04 15:46:10,687 - INFO - Running Nikto scan on https://tbbox.me/
+2025-03-04 15:46:11,076 - WARNING - Failed to read Nikto output: Expecting value: line 1 column 1 (char 0)
+2025-03-04 15:46:11,076 - INFO - Running Nmap scan
+2025-03-04 15:46:34,075 - INFO - Vulnerability scan completed successfully
+2025-07-09 21:03:27,707 - WARNING - Not Found: /
+2025-07-09 21:04:39,206 - WARNING - Not Found: /favicon.ico
+2025-07-09 21:05:00,491 - WARNING - Invalid request method for /scan_ports/
+2025-07-09 21:05:00,492 - WARNING - Method Not Allowed: /api/nmap/scan/
+2025-07-10 17:01:48,646 - INFO - Starting vulnerability scan for https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2
+2025-07-10 17:01:48,647 - INFO - Running Gobuster for https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2
+2025-07-10 17:01:48,999 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/ab7263df-1a11-4f0b-88c5-3e8a5a04553c => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-10 17:01:48,999 - INFO - Running Nikto scan
+2025-07-10 17:01:49,000 - INFO - Running Nikto scan on https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2
+2025-07-10 17:01:49,073 - WARNING - Failed to read Nikto output: Expecting value: line 1 column 1 (char 0)
+2025-07-10 17:01:49,073 - INFO - Running Nmap scan
+2025-07-10 17:02:04,297 - INFO - Vulnerability scan completed successfully
+2025-07-10 17:07:32,597 - WARNING - Not Found: /api/auth/user
+2025-07-10 17:07:32,606 - WARNING - Not Found: /api/auth/user
+2025-07-10 17:07:32,612 - WARNING - Not Found: /api/auth/user
+2025-07-10 17:07:32,643 - WARNING - Not Found: /api/auth/user
+2025-07-10 17:07:32,648 - WARNING - Not Found: /api/auth/user
+2025-07-10 17:07:32,652 - WARNING - Not Found: /api/auth/user
+2025-07-10 17:13:01,559 - WARNING - Not Found: /api/auth/github
+2025-07-10 17:13:02,453 - WARNING - Not Found: /favicon.ico
+2025-07-11 17:20:32,971 - INFO - Starting vulnerability scan for https://github.com/0PrashantYadav0/nexum-frontend
+2025-07-11 17:20:32,972 - INFO - Running Gobuster for https://github.com/0PrashantYadav0/nexum-frontend
+2025-07-11 17:21:40,116 - INFO - Running Nikto scan
+2025-07-11 17:21:40,117 - INFO - Running Nikto scan on https://github.com/0PrashantYadav0/nexum-frontend
+2025-07-11 17:21:40,195 - WARNING - Failed to read Nikto output: Expecting value: line 1 column 1 (char 0)
+2025-07-11 17:21:40,195 - INFO - Running Nmap scan
+2025-07-11 17:21:40,953 - INFO - Vulnerability scan completed successfully
+2025-07-11 17:29:01,879 - INFO - Starting vulnerability scan for https://nexum-frontend.vercel.app
+2025-07-11 17:29:01,881 - INFO - Running Gobuster for https://nexum-frontend.vercel.app
+2025-07-11 17:30:15,935 - INFO - Running Nikto scan
+2025-07-11 17:30:15,937 - INFO - Running Nikto scan on https://nexum-frontend.vercel.app
+2025-07-11 17:30:15,989 - WARNING - Failed to read Nikto output: Expecting value: line 1 column 1 (char 0)
+2025-07-11 17:30:15,989 - INFO - Running Nmap scan
+2025-07-11 17:32:12,843 - INFO - Vulnerability scan completed successfully
+2025-07-11 17:53:05,831 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-11 17:53:05,832 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-11 17:53:06,406 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/dfc3b044-c699-47e2-80c1-b9898895d1d2 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-11 17:53:06,407 - INFO - Running Nikto scan
+2025-07-11 17:53:06,407 - INFO - Running Nikto scan on https://takeuforward.org/
+2025-07-11 17:55:21,189 - INFO - Running Nmap scan
+2025-07-11 17:55:38,358 - INFO - Vulnerability scan completed successfully

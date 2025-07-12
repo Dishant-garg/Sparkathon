@@ -191,3 +191,122 @@
 2025-07-12 19:05:21,151 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
 2025-07-12 19:05:21,151 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
 2025-07-12 19:05:22,169 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 19:47:40,583 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 19:47:40,584 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 19:47:40,892 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/3eea44d4-9a36-4d04-97a7-6b5bc944ff00 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 19:47:40,892 - INFO - Vulnerability scan completed successfully
+2025-07-12 19:49:13,246 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 19:49:13,246 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 19:49:13,519 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/a7cfe25a-cc1d-45ad-a793-8dbaf6dcbf25 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 19:49:13,519 - INFO - Vulnerability scan completed successfully
+2025-07-12 19:49:37,881 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 19:49:37,881 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 19:49:38,145 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/52cda4bf-2d41-4485-92f2-c492a46b5b05 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 19:49:38,145 - INFO - Vulnerability scan completed successfully
+2025-07-12 19:50:20,354 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 19:50:20,354 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 19:50:20,604 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/66e9f3e5-bb16-435a-8d28-7cec7ef61524 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 19:50:20,605 - INFO - Vulnerability scan completed successfully
+2025-07-12 19:50:20,609 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 19:50:20,609 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 19:50:23,429 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 20:33:01,700 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 20:33:01,701 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 20:33:01,974 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/d5fa727c-3caa-4b12-b486-e898d272e6c3 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 20:33:01,974 - INFO - Vulnerability scan completed successfully
+2025-07-12 20:33:01,981 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 20:33:01,981 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 20:33:02,840 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 20:35:27,634 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 20:35:27,635 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 20:35:27,882 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/fa3f5664-145e-48a8-846e-57b823e07ca4 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 20:35:27,882 - INFO - Vulnerability scan completed successfully
+2025-07-12 20:35:27,886 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 20:35:27,886 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 20:35:28,860 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 20:35:56,694 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 20:35:56,695 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 20:35:56,938 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/e08fd255-455d-461a-938d-e2f27cc8dfd6 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 20:35:56,939 - INFO - Vulnerability scan completed successfully
+2025-07-12 20:35:56,943 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 20:35:56,943 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 20:35:57,945 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 20:36:05,205 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 20:36:05,205 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 20:36:05,447 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/07968ecc-f91f-489e-9f00-2a818118d00d => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 20:36:05,448 - INFO - Vulnerability scan completed successfully
+2025-07-12 20:36:05,452 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 20:36:05,452 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 20:36:06,397 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 20:41:22,302 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 20:41:22,302 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 20:41:22,588 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/22e3c6c2-4f66-48fa-adc3-8742284a3a46 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 20:41:22,589 - INFO - Vulnerability scan completed successfully
+2025-07-12 20:41:22,594 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 20:41:22,594 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 20:41:23,603 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 20:44:03,609 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 20:44:03,610 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 20:44:03,860 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/8d3c745f-46af-4414-9d6c-7c8cc4ce1401 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 20:44:03,861 - INFO - Vulnerability scan completed successfully
+2025-07-12 20:44:03,865 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 20:44:03,865 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 20:44:04,761 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 20:47:08,966 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 20:47:08,968 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 20:47:09,218 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/a60a5a2d-ca2a-4a2f-8cad-463e71125df4 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 20:47:09,219 - INFO - Vulnerability scan completed successfully
+2025-07-12 20:47:09,223 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 20:47:09,223 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 20:47:10,228 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 20:49:10,460 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 20:49:10,461 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 20:49:10,737 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/14924fe0-8ea3-441f-b11c-758b5881002d => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 20:49:10,738 - INFO - Vulnerability scan completed successfully
+2025-07-12 20:49:10,743 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 20:49:10,743 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 20:49:11,676 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 20:51:34,105 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 20:51:34,105 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 20:51:34,591 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/2c98da21-8991-46ca-b12c-f7fb05db2640 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 20:51:34,592 - INFO - Vulnerability scan completed successfully
+2025-07-12 20:51:34,602 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 20:51:34,602 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 20:51:36,482 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 20:54:34,050 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 20:54:34,051 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 20:54:34,297 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/0ab7513e-8b05-442c-a385-5a4350dbd806 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 20:54:34,298 - INFO - Vulnerability scan completed successfully
+2025-07-12 20:54:34,302 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 20:54:34,302 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 20:54:35,212 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 20:59:52,255 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 20:59:52,255 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 20:59:52,528 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/4415b166-f138-4b8c-9546-c0348bdf2d1e => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 20:59:52,529 - INFO - Vulnerability scan completed successfully
+2025-07-12 20:59:52,532 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 20:59:52,532 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 20:59:53,451 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 21:00:45,429 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 21:00:45,430 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 21:00:45,673 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/19c98811-f17b-4d88-adab-781500189b65 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 21:00:45,673 - INFO - Vulnerability scan completed successfully
+2025-07-12 21:00:45,679 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 21:00:45,679 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 21:00:46,657 - INFO - WPScan completed for https://takeuforward.org/

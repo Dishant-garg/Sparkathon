@@ -269,6 +269,43 @@ const workflowController = {
       console.error('Error fetching execution status:', error);
       res.status(500).json({ error: 'Failed to fetch execution status' });
     }
+  },
+
+  // Get all workflow execution results for reports
+  getAllExecutionResults: async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      // Find all workflows for the user that have execution results
+      const workflows = await Workflow.find({ 
+        userId: req.user._id,
+        lastExecution: { $exists: true, $ne: null }
+      }).sort({ 'lastExecution.completedAt': -1 });
+
+      const reports = workflows.map(workflow => {
+        const execution = workflow.lastExecution;
+        return {
+          id: workflow._id.toString(),
+          workflowId: workflow._id.toString(),
+          name: workflow.name,
+          status: execution.status,
+          startedAt: execution.startedAt,
+          completedAt: execution.completedAt,
+          results: execution.results,
+          error: execution.error,
+          duration: execution.completedAt && execution.startedAt 
+            ? execution.completedAt.getTime() - execution.startedAt.getTime()
+            : null
+        };
+      });
+
+      res.json({ reports });
+    } catch (error) {
+      console.error('Error fetching execution results:', error);
+      res.status(500).json({ error: 'Failed to fetch execution results' });
+    }
   }
 };
 

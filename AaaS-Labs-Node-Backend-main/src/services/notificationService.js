@@ -4,6 +4,7 @@ const axios = require('axios');
 class NotificationService {
   constructor() {
     this.emailTransporter = null;
+    this.emailEnabled = false;
     this.initializeEmailTransporter();
   }
 
@@ -12,15 +13,34 @@ class NotificationService {
    */
   initializeEmailTransporter() {
     try {
+      // Check if email is enabled and credentials are provided
+      const emailEnabled = process.env.ENABLE_EMAIL_NOTIFICATIONS === 'true';
+      const emailUser = process.env.EMAIL_USER;
+      const emailPassword = process.env.EMAIL_PASSWORD;
+
+      if (!emailEnabled) {
+        console.log('Email notifications are disabled in configuration');
+        return;
+      }
+
+      if (!emailUser || !emailPassword || emailUser === 'test@gmail.com') {
+        console.log('Email credentials not configured properly. Email notifications will be disabled.');
+        return;
+      }
+
       this.emailTransporter = nodemailer.createTransporter({
         service: 'gmail', // or your preferred email service
         auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASSWORD // Use app password for Gmail
+          user: emailUser,
+          pass: emailPassword // Use app password for Gmail
         }
       });
+
+      this.emailEnabled = true;
+      console.log('Email transporter initialized successfully');
     } catch (error) {
       console.error('Failed to initialize email transporter:', error.message);
+      this.emailEnabled = false;
     }
   }
 
@@ -33,6 +53,16 @@ class NotificationService {
    */
   async sendEmail(config, subject, scanResults) {
     try {
+      // Check if email is enabled and configured
+      if (!this.emailEnabled) {
+        console.log('Email notifications are disabled or not configured. Skipping email notification.');
+        return {
+          success: true,
+          message: 'Email notifications disabled',
+          skipped: true
+        };
+      }
+
       if (!this.emailTransporter) {
         throw new Error('Email transporter not initialized');
       }

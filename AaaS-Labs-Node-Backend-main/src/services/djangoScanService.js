@@ -38,9 +38,19 @@ class DjangoScanService {
       };
     } catch (error) {
       console.error('Nmap scan failed:', error.message);
+      
+      let errorMessage = 'Unknown error';
+      if (error.code === 'ECONNREFUSED') {
+        errorMessage = 'Django backend is not running. Please start it with: python manage.py runserver 8000';
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       return {
         success: false,
-        error: error.response?.data?.error || error.message,
+        error: errorMessage,
         scanType: 'nmap',
         target,
         timestamp: new Date().toISOString()
@@ -98,10 +108,118 @@ class DjangoScanService {
       };
     } catch (error) {
       console.error('Gobuster scan failed:', error.message);
+      
+      let errorMessage = 'Unknown error';
+      if (error.code === 'ECONNREFUSED') {
+        errorMessage = 'Django backend is not running. Please start it with: python manage.py runserver 8000';
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       return {
         success: false,
-        error: error.response?.data?.error || error.message,
+        error: errorMessage,
         scanType: 'gobuster',
+        target: url,
+        timestamp: new Date().toISOString()
+      };
+    }
+  }
+
+  /**
+   * Perform SQLMap SQL injection scan
+   * @param {string} url - Target URL
+   * @param {string} sqlmapArgs - SQLMap scan arguments (optional)
+   * @returns {Promise<Object>} Scan results
+   */
+  async sqlmapScan(url, sqlmapArgs = '--batch --random-agent') {
+    try {
+      console.log(`Starting SQLMap scan for URL: ${url}`);
+      
+      const response = await axios.post(`${this.baseURL}/api/nmap/sqlmap/`, {
+        target: url,
+        arguments: sqlmapArgs
+      }, {
+        timeout: this.timeout,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      return {
+        success: true,
+        data: response.data,
+        scanType: 'sqlmap',
+        target: url,
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error('SQLMap scan failed:', error.message);
+      
+      let errorMessage = 'Unknown error';
+      if (error.code === 'ECONNREFUSED') {
+        errorMessage = 'Django backend is not running. Please start it with: python manage.py runserver 8000';
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      return {
+        success: false,
+        error: errorMessage,
+        scanType: 'sqlmap',
+        target: url,
+        timestamp: new Date().toISOString()
+      };
+    }
+  }
+
+  /**
+   * Perform WPScan WordPress vulnerability scan
+   * @param {string} url - Target URL
+   * @param {string} wpscanArgs - WPScan arguments (optional)
+   * @returns {Promise<Object>} Scan results
+   */
+  async wpscanScan(url, wpscanArgs = '--random-user-agent') {
+    try {
+      console.log(`Starting WPScan for URL: ${url}`);
+      
+      const response = await axios.post(`${this.baseURL}/api/nmap/wpscan/`, {
+        target: url,
+        arguments: wpscanArgs
+      }, {
+        timeout: this.timeout,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      return {
+        success: true,
+        data: response.data,
+        scanType: 'wpscan',
+        target: url,
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error('WPScan failed:', error.message);
+      
+      let errorMessage = 'Unknown error';
+      if (error.code === 'ECONNREFUSED') {
+        errorMessage = 'Django backend is not running. Please start it with: python manage.py runserver 8000';
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      return {
+        success: false,
+        error: errorMessage,
+        scanType: 'wpscan',
         target: url,
         timestamp: new Date().toISOString()
       };

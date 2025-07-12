@@ -76,6 +76,9 @@ class WorkflowExecutionService {
       // Execute nodes in sequence
       const results = await this.executeNodes(executionGraph, triggerNode.id, targetUrl);
 
+      console.log(`Workflow execution completed successfully: ${executionId}`);
+      console.log('Results:', JSON.stringify(results, null, 2));
+
       // Update workflow with success
       workflow.lastExecution = {
         status: 'completed',
@@ -85,6 +88,8 @@ class WorkflowExecutionService {
         error: null
       };
       await workflow.save();
+
+      console.log('Workflow saved with results');
 
       // Remove from execution queue
       this.executionQueue.delete(executionId);
@@ -181,8 +186,8 @@ class WorkflowExecutionService {
 
     console.log(`Executing node: ${node.type} (${nodeId})`);
 
-    // Execute current node
-    const nodeResult = await this.executeNode(node, targetUrl, previousResults);
+    // Execute current node - pass all results for notification nodes
+    const nodeResult = await this.executeNode(node, targetUrl, previousResults, results);
     results[nodeId] = nodeResult;
 
     // Execute child nodes
@@ -196,9 +201,10 @@ class WorkflowExecutionService {
    * @param {Object} node - Node to execute
    * @param {string} targetUrl - Target URL
    * @param {Object} previousResults - Results from previous nodes
+   * @param {Object} allResults - All results accumulated so far
    * @returns {Promise<Object>} Node execution result
    */
-  async executeNode(node, targetUrl, previousResults) {
+  async executeNode(node, targetUrl, previousResults, allResults = {}) {
     try {
       switch (node.type) {
         case 'trigger':
@@ -216,29 +222,55 @@ class WorkflowExecutionService {
         case 'gobuster':
           return await djangoScanService.gobusterScan(targetUrl);
 
+        case 'sqlmap':
+          const sqlmapArgs = node.data?.scanArgs || '--batch --random-agent';
+          return await djangoScanService.sqlmapScan(targetUrl, sqlmapArgs);
+
+        case 'wpscan':
+          const wpscanArgs = node.data?.scanArgs || '--random-user-agent';
+          return await djangoScanService.wpscanScan(targetUrl, wpscanArgs);
+
         case 'email':
-          if (previousResults && previousResults.success) {
-            const emailConfig = node.data || {};
-            const subject = `Security Scan Results for ${targetUrl}`;
-            return await notificationService.sendEmail(emailConfig, subject, previousResults);
+          // Send email notification with all scan results
+          const emailConfig = node.data || {};
+          const subject = `Security Scan Results for ${targetUrl}`;
+          
+          // Collect all scan results from the workflow
+          const allEmailResults = Object.values(allResults).filter(r => r && r.scanType);
+          
+          if (allEmailResults.length === 0) {
+            return { success: false, error: 'No scan results to send' };
           }
-          return { success: false, error: 'No scan results to send' };
+          
+          return await notificationService.sendEmail(emailConfig, subject, allEmailResults);
 
         case 'slack':
-          if (previousResults && previousResults.success) {
-            const slackConfig = node.data || {};
-            const title = `🔍 Security Scan Alert - ${targetUrl}`;
-            return await notificationService.sendSlackNotification(slackConfig, title, previousResults);
+          // Send Slack notification with all scan results
+          const slackConfig = node.data || {};
+          const slackTitle = `🔍 Security Scan Alert - ${targetUrl}`;
+          
+          // Collect all scan results from the workflow
+          const allSlackResults = Object.values(allResults).filter(r => r && r.scanType);
+          
+          if (allSlackResults.length === 0) {
+            return { success: false, error: 'No scan results to send' };
           }
-          return { success: false, error: 'No scan results to send' };
+          
+          return await notificationService.sendSlackNotification(slackConfig, slackTitle, allSlackResults);
 
         case 'github-issue':
-          if (previousResults && previousResults.success) {
-            const githubConfig = node.data || {};
-            const title = `Security Vulnerability Found - ${targetUrl}`;
-            return await notificationService.createGitHubIssue(githubConfig, title, previousResults);
+          // Create GitHub issue with all scan results
+          const githubConfig = node.data || {};
+          const issueTitle = `Security Vulnerability Found - ${targetUrl}`;
+          
+          // Collect all scan results from the workflow
+          const allGithubResults = Object.values(allResults).filter(r => r && r.scanType);
+          
+          if (allGithubResults.length === 0) {
+            return { success: false, error: 'No scan results to create issue' };
           }
-          return { success: false, error: 'No scan results to create issue' };
+          
+          return await notificationService.createGitHubIssue(githubConfig, issueTitle, allGithubResults);
 
         default:
           console.warn(`Unknown node type: ${node.type}`);

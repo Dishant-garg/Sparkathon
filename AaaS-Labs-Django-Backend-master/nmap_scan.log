@@ -191,3 +191,42 @@
 2025-07-12 19:05:21,151 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
 2025-07-12 19:05:21,151 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
 2025-07-12 19:05:22,169 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 19:29:00,952 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 19:29:00,953 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 19:29:01,245 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/892de006-fba8-4a96-b1a0-3158b207723c => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 19:29:01,245 - INFO - Vulnerability scan completed successfully
+2025-07-12 19:29:01,251 - INFO - Starting Nmap scan: original_target=https://takeuforward.org/, hostname=takeuforward.org, arguments=-F
+2025-07-12 19:29:03,180 - INFO - Scan completed for https://takeuforward.org/
+2025-07-12 19:29:03,187 - INFO - Starting SQLMap scan: target=https://takeuforward.org/, arguments=--batch --random-agent
+2025-07-12 19:29:03,188 - INFO - Running SQLMap command: python3 /opt/sqlmap/sqlmap.py --url https://takeuforward.org/ --batch --random-agent --text-only --output-dir /tmp --timeout 30 --threads 1 --level 1 --risk 1
+2025-07-12 19:29:04,365 - INFO - SQLMap scan completed for https://takeuforward.org/
+2025-07-12 19:29:04,371 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 19:29:04,371 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 19:29:13,400 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 19:42:45,154 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 19:42:45,156 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 19:42:45,465 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/46110c98-d14f-4b8c-8a23-7f79787bfa06 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 19:42:45,465 - INFO - Vulnerability scan completed successfully
+2025-07-12 19:42:45,470 - INFO - Starting Nmap scan: original_target=https://takeuforward.org/, hostname=takeuforward.org, arguments=-F
+2025-07-12 19:42:47,738 - INFO - Scan completed for https://takeuforward.org/
+2025-07-12 19:42:47,743 - INFO - Starting SQLMap scan: target=https://takeuforward.org/, arguments=--batch --random-agent
+2025-07-12 19:42:47,743 - INFO - Running SQLMap command: python3 /opt/sqlmap/sqlmap.py --url https://takeuforward.org/ --batch --random-agent --text-only --output-dir /tmp --timeout 30 --threads 1 --level 1 --risk 1
+2025-07-12 19:42:49,001 - INFO - SQLMap scan completed for https://takeuforward.org/
+2025-07-12 19:42:49,004 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 19:42:49,004 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 19:42:49,910 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-12 19:52:17,261 - INFO - Starting vulnerability scan for https://takeuforward.org/
+2025-07-12 19:52:17,263 - INFO - Running Gobuster for https://takeuforward.org/
+2025-07-12 19:52:17,555 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://takeuforward.org/304dbfe2-4afb-48ce-ae05-594d3af12315 => 200 (Length: 3100). To continue please exclude the status code or the length
+
+2025-07-12 19:52:17,556 - INFO - Vulnerability scan completed successfully
+2025-07-12 19:52:17,561 - INFO - Starting Nmap scan: original_target=https://takeuforward.org/, hostname=takeuforward.org, arguments=-F
+2025-07-12 19:52:19,419 - INFO - Scan completed for https://takeuforward.org/
+2025-07-12 19:52:19,423 - INFO - Starting SQLMap scan: target=https://takeuforward.org/, arguments=--batch --random-agent
+2025-07-12 19:52:19,424 - INFO - Running SQLMap command: python3 /opt/sqlmap/sqlmap.py --url https://takeuforward.org/ --batch --random-agent --text-only --output-dir /tmp --timeout 30 --threads 1 --level 1 --risk 1
+2025-07-12 19:52:20,601 - INFO - SQLMap scan completed for https://takeuforward.org/
+2025-07-12 19:52:20,606 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
+2025-07-12 19:52:20,606 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-12 19:52:21,543 - INFO - WPScan completed for https://takeuforward.org/

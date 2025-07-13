@@ -104,4 +104,101 @@ const fetchRepoContents = async (owner, repo, path = "", accessToken) => {
   }
 };
 
-module.exports = { fetchRepoContents, getUserRepos };
+/**
+ * Fetch repository files for public repositories (used for OWASP analysis)
+ * @param {string} owner - Repository owner
+ * @param {string} repo - Repository name
+ * @returns {Promise<Array>} - List of files with content
+ */
+const getRepositoryFiles = async (owner, repo) => {
+  try {
+    console.log(`Fetching files for public repository: ${owner}/${repo}`);
+    
+    // First, try to get repository contents without authentication for public repos
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents`;
+    
+    const response = await axios.get(url, {
+      headers: {
+        Accept: "application/vnd.github.v3+json",
+        "User-Agent": "AaaS-Labs-App"
+      },
+      timeout: 10000 // 10 second timeout
+    });
+
+    let files = [];
+    const maxFiles = 50; // Limit number of files to analyze
+    const allowedExtensions = ['.js', '.ts', '.py', '.java', '.php', '.rb', '.go', '.cs', '.cpp', '.c', '.jsx', '.tsx', '.vue', '.swift', '.kt'];
+    
+    // Process files recursively but limit depth and count
+    const processContents = async (contents, currentDepth = 0, maxDepth = 3) => {
+      if (currentDepth > maxDepth || files.length >= maxFiles) {
+        return;
+      }
+      
+      for (const item of contents) {
+        if (files.length >= maxFiles) break;
+        
+        if (item.type === "file") {
+          // Check if file extension is allowed
+          const hasAllowedExt = allowedExtensions.some(ext => 
+            item.name.toLowerCase().endsWith(ext)
+          );
+          
+          if (hasAllowedExt && item.size < 100000) { // Skip files larger than 100KB
+            try {
+              const fileResponse = await axios.get(item.download_url, {
+                timeout: 5000,
+                responseType: "text"
+              });
+              
+              files.push({
+                path: item.path,
+                content: fileResponse.data,
+                size: item.size,
+                name: item.name
+              });
+              
+              console.log(`Added file: ${item.path} (${item.size} bytes)`);
+            } catch (fileError) {
+              console.log(`Skipped file ${item.path}: ${fileError.message}`);
+            }
+          }
+        } else if (item.type === "dir" && currentDepth < maxDepth) {
+          try {
+            const dirUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${item.path}`;
+            const dirResponse = await axios.get(dirUrl, {
+              headers: {
+                Accept: "application/vnd.github.v3+json",
+                "User-Agent": "AaaS-Labs-App"
+              },
+              timeout: 5000
+            });
+            
+            await processContents(dirResponse.data, currentDepth + 1, maxDepth);
+          } catch (dirError) {
+            console.log(`Skipped directory ${item.path}: ${dirError.message}`);
+          }
+        }
+      }
+    };
+    
+    await processContents(response.data);
+    
+    console.log(`Successfully fetched ${files.length} files for analysis`);
+    return files;
+    
+  } catch (error) {
+    console.error('Error fetching repository files:', error.response?.data || error.message);
+    
+    if (error.response?.status === 404) {
+      throw new Error('Repository not found or is private');
+    }
+    if (error.response?.status === 403) {
+      throw new Error('GitHub API rate limit exceeded or repository access denied');
+    }
+    
+    throw new Error(`Failed to fetch repository files: ${error.message}`);
+  }
+};
+
+module.exports = { fetchRepoContents, getUserRepos, getRepositoryFiles };

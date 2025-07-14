@@ -17,6 +17,8 @@ class NotificationService {
       const emailEnabled = process.env.ENABLE_EMAIL_NOTIFICATIONS === 'true';
       const emailUser = process.env.EMAIL_USER;
       const emailPassword = process.env.EMAIL_PASSWORD;
+      console.log(emailUser)
+      console.log(emailPassword)
 
       if (!emailEnabled) {
         console.log('Email notifications are disabled in configuration');

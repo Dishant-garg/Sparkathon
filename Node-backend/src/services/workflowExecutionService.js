@@ -266,7 +266,7 @@ class WorkflowExecutionService {
           const emailConfig =
             node.data && node.data.to
               ? node.data
-              : { to: "colab696969@gmail.com", from: process.env.EMAIL_USER };
+              : { to: "lci2023038@iiitl.ac.in", from: process.env.EMAIL_USER };
           const subject = `Security Scan Results for ${targetUrl}`;
 
           // Collect all scan results from the workflow

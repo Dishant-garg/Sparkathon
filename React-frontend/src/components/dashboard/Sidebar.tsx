@@ -56,7 +56,7 @@ export function Sidebar() {
         <div className="flex items-center space-x-2">
           <AAASLabLogo className="h-10 w-10" />
           <h2 className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 font-bold text-xl">
-            AAAS LABS
+            VulnPilot
           </h2>
         </div>
       </div>

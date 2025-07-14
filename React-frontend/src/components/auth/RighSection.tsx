@@ -15,11 +15,11 @@ const RightSection = () => {
             <div className="flex items-center justify-center gap-3 mb-6">
               <AAASLabLogo className="h-10 w-10" />
               <h2 className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 font-bold text-xl">
-                AAAS LABS
+                VulnPilot
               </h2>
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-              Join thousands of developers who trust AAAS Labs to streamline
+              Join thousands of developers who trust VulnPilot to streamline
               their workflow
             </p>
           </CardHeader>

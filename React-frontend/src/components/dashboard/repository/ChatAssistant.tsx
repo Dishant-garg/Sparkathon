@@ -18,6 +18,13 @@ interface ChatAssistantProps {
   onClose: () => void;
 }
 
+interface ParsedAnalysis {
+  summary: string;
+  key_features?: string[];
+  potential_issues?: string[];
+  best_practices?: string[];
+}
+
 export const ChatAssistant = ({ repo, onClose }: ChatAssistantProps) => {
   const {
     analysis,
@@ -34,6 +41,30 @@ export const ChatAssistant = ({ repo, onClose }: ChatAssistantProps) => {
   const [message, setMessage] = useState<string>("");
   const [isExpanded, setIsExpanded] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  // Function to parse JSON from the response string
+  const parseAnalysisResponse = (responseString: string): ParsedAnalysis | null => {
+    try {
+      // Extract JSON from the response string
+      const jsonMatch = responseString.match(/```json\s*(\{[\s\S]*?\})\s*```/);
+      if (jsonMatch && jsonMatch[1]) {
+        return JSON.parse(jsonMatch[1]);
+      }
+      
+      // Fallback: try to find JSON without markdown formatting
+      const jsonStart = responseString.indexOf('{');
+      const jsonEnd = responseString.lastIndexOf('}');
+      if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+        const jsonString = responseString.substring(jsonStart, jsonEnd + 1);
+        return JSON.parse(jsonString);
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error parsing analysis response:', error);
+      return null;
+    }
+  };
 
   const handleSendMessage = () => {
     if (message.trim()) {
@@ -82,6 +113,9 @@ export const ChatAssistant = ({ repo, onClose }: ChatAssistantProps) => {
     return () => window.removeEventListener("resize", handleResize);
   }, [isExpanded]);
 
+  // Parse the analysis response
+  const parsedAnalysis = analysis?.response ? parseAnalysisResponse(analysis?.response) : null;
+  
   return (
     <Card
       className={`
@@ -168,52 +202,65 @@ export const ChatAssistant = ({ repo, onClose }: ChatAssistantProps) => {
                     <h4 className="font-medium">Code Analysis</h4>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div>
-                      <p className="text-sm">{analysis.response.summary}</p>
-                    </div>
+                    {parsedAnalysis ? (
+                      <>
+                        <div>
+                          <p className="text-sm">{parsedAnalysis.summary}</p>
+                        </div>
 
-                    {analysis.response.key_features.length > 0 && (
-                      <div>
-                        <h5 className="text-sm font-medium mb-1">
-                          Key Features
-                        </h5>
-                        <ul className="list-disc list-inside text-sm text-muted-foreground pl-1">
-                          {analysis.response.key_features.map(
-                            (feature, index) => (
-                              <li key={index}>{feature}</li>
-                            )
-                          )}
-                        </ul>
-                      </div>
-                    )}
+                        {parsedAnalysis.key_features?.length > 0 && (
+                          <div>
+                            <h5 className="text-sm font-medium mb-1">
+                              Key Features
+                            </h5>
+                            <ul className="list-disc list-inside text-sm text-muted-foreground pl-1">
+                              {parsedAnalysis.key_features.map(
+                                (feature, index) => (
+                                  <li key={index}>{feature}</li>
+                                )
+                              )}
+                            </ul>
+                          </div>
+                        )}
 
-                    {analysis.response.potential_issues.length > 0 && (
-                      <div>
-                        <h5 className="text-sm font-medium text-destructive mb-1">
-                          Potential Issues
-                        </h5>
-                        <ul className="list-disc list-inside text-sm text-muted-foreground pl-1">
-                          {analysis.response.potential_issues.map(
-                            (issue, index) => (
-                              <li key={index}>{issue}</li>
-                            )
-                          )}
-                        </ul>
-                      </div>
-                    )}
+                        {parsedAnalysis.potential_issues?.length > 0 && (
+                          <div>
+                            <h5 className="text-sm font-medium text-destructive mb-1">
+                              Potential Issues
+                            </h5>
+                            <ul className="list-disc list-inside text-sm text-muted-foreground pl-1">
+                              {parsedAnalysis.potential_issues.map(
+                                (issue, index) => (
+                                  <li key={index}>{issue}</li>
+                                )
+                              )}
+                            </ul>
+                          </div>
+                        )}
 
-                    {analysis.response.best_practices.length > 0 && (
+                        {parsedAnalysis.best_practices?.length > 0 && (
+                          <div>
+                            <h5 className="text-sm font-medium text-green-600 dark:text-green-400 mb-1">
+                              Best Practices
+                            </h5>
+                            <ul className="list-disc list-inside text-sm text-muted-foreground pl-1">
+                              {parsedAnalysis.best_practices.map(
+                                (practice, index) => (
+                                  <li key={index}>{practice}</li>
+                                )
+                              )}
+                            </ul>
+                          </div>
+                        )}
+                      </>
+                    ) : (
                       <div>
-                        <h5 className="text-sm font-medium text-green-600 dark:text-green-400 mb-1">
-                          Best Practices
-                        </h5>
-                        <ul className="list-disc list-inside text-sm text-muted-foreground pl-1">
-                          {analysis.response.best_practices.map(
-                            (practice, index) => (
-                              <li key={index}>{practice}</li>
-                            )
-                          )}
-                        </ul>
+                        <p className="text-sm text-muted-foreground">
+                          Unable to parse analysis response. Raw response:
+                        </p>
+                        <pre className="text-xs bg-muted p-2 rounded mt-2 overflow-x-auto">
+                          {analysis.response}
+                        </pre>
                       </div>
                     )}
                   </CardContent>

@@ -191,3 +191,129 @@
 2025-07-12 19:05:21,151 - INFO - Starting WPScan: target=https://takeuforward.org/, arguments=--random-user-agent
 2025-07-12 19:05:21,151 - INFO - Running WPScan command: wpscan --url https://takeuforward.org/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
 2025-07-12 19:05:22,169 - INFO - WPScan completed for https://takeuforward.org/
+2025-07-13 16:33:24,437 - WARNING - Not Found: /
+2025-07-13 16:33:24,593 - WARNING - Not Found: /favicon.ico
+2025-07-14 04:42:23,250 - WARNING - Not Found: /
+2025-07-14 04:42:23,549 - WARNING - Not Found: /favicon.ico
+2025-07-14 04:42:44,597 - INFO - Starting vulnerability scan for https://personallm.vercel.app/
+2025-07-14 04:42:44,598 - INFO - Running Gobuster for https://personallm.vercel.app/
+2025-07-14 04:43:04,570 - INFO - Vulnerability scan completed successfully
+2025-07-14 04:43:04,578 - INFO - Starting Nmap scan: original_target=https://personallm.vercel.app/, hostname=personallm.vercel.app, arguments=-F
+2025-07-14 04:43:07,181 - INFO - Scan completed for https://personallm.vercel.app/
+2025-07-14 04:43:07,185 - INFO - Starting SQLMap scan: target=https://personallm.vercel.app/, arguments=--batch --random-agent
+2025-07-14 04:43:07,185 - INFO - Running SQLMap command: python3 /opt/sqlmap/sqlmap.py --url https://personallm.vercel.app/ --batch --random-agent --text-only --output-dir /tmp --timeout 30 --threads 1 --level 1 --risk 1
+2025-07-14 04:43:10,510 - INFO - SQLMap scan completed for https://personallm.vercel.app/
+2025-07-14 04:43:10,515 - INFO - Starting WPScan: target=https://personallm.vercel.app/, arguments=--random-user-agent
+2025-07-14 04:43:10,515 - INFO - Running WPScan command: wpscan --url https://personallm.vercel.app/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-14 04:43:16,345 - INFO - WPScan completed for https://personallm.vercel.app/
+2025-07-14 04:46:32,220 - INFO - Starting vulnerability scan for https://personallm.vercel.app/
+2025-07-14 04:46:32,221 - INFO - Running Gobuster for https://personallm.vercel.app/
+2025-07-14 04:46:32,481 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://personallm.vercel.app/2782dadd-889a-437e-ba45-6fa2f121613e => 403 (Length: 34296). To continue please exclude the status code or the length
+
+2025-07-14 04:46:32,481 - INFO - Vulnerability scan completed successfully
+2025-07-14 04:46:32,491 - INFO - Starting Nmap scan: original_target=https://personallm.vercel.app/, hostname=personallm.vercel.app, arguments=-F
+2025-07-14 04:46:35,170 - INFO - Scan completed for https://personallm.vercel.app/
+2025-07-14 04:46:35,175 - INFO - Starting SQLMap scan: target=https://personallm.vercel.app/, arguments=--batch --random-agent
+2025-07-14 04:46:35,175 - INFO - Running SQLMap command: python3 /opt/sqlmap/sqlmap.py --url https://personallm.vercel.app/ --batch --random-agent --text-only --output-dir /tmp --timeout 30 --threads 1 --level 1 --risk 1
+2025-07-14 04:46:37,899 - INFO - SQLMap scan completed for https://personallm.vercel.app/
+2025-07-14 04:46:37,907 - INFO - Starting WPScan: target=https://personallm.vercel.app/, arguments=--random-user-agent
+2025-07-14 04:46:37,907 - INFO - Running WPScan command: wpscan --url https://personallm.vercel.app/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-14 04:46:39,129 - INFO - WPScan completed for https://personallm.vercel.app/
+2025-07-14 04:49:15,064 - INFO - Starting vulnerability scan for https://personallm.vercel.app/
+2025-07-14 04:49:15,065 - INFO - Running Gobuster for https://personallm.vercel.app/
+2025-07-14 04:49:15,256 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://personallm.vercel.app/ab2da08f-b6f9-43ae-9898-3f0bf67d05b3 => 403 (Length: 34286). To continue please exclude the status code or the length
+
+2025-07-14 04:49:15,257 - INFO - Vulnerability scan completed successfully
+2025-07-14 04:49:15,265 - INFO - Starting Nmap scan: original_target=https://personallm.vercel.app/, hostname=personallm.vercel.app, arguments=-F
+2025-07-14 04:49:17,558 - INFO - Scan completed for https://personallm.vercel.app/
+2025-07-14 04:49:17,562 - INFO - Starting SQLMap scan: target=https://personallm.vercel.app/, arguments=--batch --random-agent
+2025-07-14 04:49:17,562 - INFO - Running SQLMap command: python3 /opt/sqlmap/sqlmap.py --url https://personallm.vercel.app/ --batch --random-agent --text-only --output-dir /tmp --timeout 30 --threads 1 --level 1 --risk 1
+2025-07-14 04:49:20,423 - INFO - SQLMap scan completed for https://personallm.vercel.app/
+2025-07-14 04:49:20,426 - INFO - Starting WPScan: target=https://personallm.vercel.app/, arguments=--random-user-agent
+2025-07-14 04:49:20,426 - INFO - Running WPScan command: wpscan --url https://personallm.vercel.app/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-14 04:49:21,850 - INFO - WPScan completed for https://personallm.vercel.app/
+2025-07-14 04:50:03,274 - INFO - Starting vulnerability scan for https://personallm.vercel.app/
+2025-07-14 04:50:03,275 - INFO - Running Gobuster for https://personallm.vercel.app/
+2025-07-14 04:50:03,501 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://personallm.vercel.app/cbba0329-f482-4e4c-8845-92444ea8fb3d => 403 (Length: 34285). To continue please exclude the status code or the length
+
+2025-07-14 04:50:03,502 - INFO - Vulnerability scan completed successfully
+2025-07-14 04:50:03,511 - INFO - Starting Nmap scan: original_target=https://personallm.vercel.app/, hostname=personallm.vercel.app, arguments=-F
+2025-07-14 04:50:06,013 - INFO - Scan completed for https://personallm.vercel.app/
+2025-07-14 04:50:06,017 - INFO - Starting SQLMap scan: target=https://personallm.vercel.app/, arguments=--batch --random-agent
+2025-07-14 04:50:06,018 - INFO - Running SQLMap command: python3 /opt/sqlmap/sqlmap.py --url https://personallm.vercel.app/ --batch --random-agent --text-only --output-dir /tmp --timeout 30 --threads 1 --level 1 --risk 1
+2025-07-14 04:50:08,940 - INFO - SQLMap scan completed for https://personallm.vercel.app/
+2025-07-14 04:50:08,944 - INFO - Starting WPScan: target=https://personallm.vercel.app/, arguments=--random-user-agent
+2025-07-14 04:50:08,944 - INFO - Running WPScan command: wpscan --url https://personallm.vercel.app/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-14 04:50:10,411 - INFO - WPScan completed for https://personallm.vercel.app/
+2025-07-14 04:54:03,006 - INFO - Starting vulnerability scan for https://personallm.vercel.app/
+2025-07-14 04:54:03,006 - INFO - Running Gobuster for https://personallm.vercel.app/
+2025-07-14 04:54:03,214 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://personallm.vercel.app/22981912-fffb-4c4d-bbec-02e85ba39c49 => 403 (Length: 34287). To continue please exclude the status code or the length
+
+2025-07-14 04:54:03,215 - INFO - Vulnerability scan completed successfully
+2025-07-14 04:54:03,226 - INFO - Starting Nmap scan: original_target=https://personallm.vercel.app/, hostname=personallm.vercel.app, arguments=-F
+2025-07-14 04:54:06,515 - INFO - Scan completed for https://personallm.vercel.app/
+2025-07-14 04:54:06,525 - INFO - Starting SQLMap scan: target=https://personallm.vercel.app/, arguments=--batch --random-agent
+2025-07-14 04:54:06,525 - INFO - Running SQLMap command: python3 /opt/sqlmap/sqlmap.py --url https://personallm.vercel.app/ --batch --random-agent --text-only --output-dir /tmp --timeout 30 --threads 1 --level 1 --risk 1
+2025-07-14 04:54:08,554 - INFO - SQLMap scan completed for https://personallm.vercel.app/
+2025-07-14 04:54:08,558 - INFO - Starting WPScan: target=https://personallm.vercel.app/, arguments=--random-user-agent
+2025-07-14 04:54:08,558 - INFO - Running WPScan command: wpscan --url https://personallm.vercel.app/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-14 04:54:10,261 - INFO - WPScan completed for https://personallm.vercel.app/
+2025-07-14 05:03:40,033 - INFO - Starting vulnerability scan for https://personallm.vercel.app/
+2025-07-14 05:03:40,034 - INFO - Running Gobuster for https://personallm.vercel.app/
+2025-07-14 05:03:44,934 - INFO - Vulnerability scan completed successfully
+2025-07-14 05:03:44,944 - INFO - Starting Nmap scan: original_target=https://personallm.vercel.app/, hostname=personallm.vercel.app, arguments=-F
+2025-07-14 05:03:46,981 - INFO - Scan completed for https://personallm.vercel.app/
+2025-07-14 05:03:46,987 - INFO - Starting SQLMap scan: target=https://personallm.vercel.app/, arguments=--batch --random-agent
+2025-07-14 05:03:46,988 - INFO - Running SQLMap command: python3 /opt/sqlmap/sqlmap.py --url https://personallm.vercel.app/ --batch --random-agent --text-only --output-dir /tmp --timeout 30 --threads 1 --level 1 --risk 1
+2025-07-14 05:03:49,661 - INFO - SQLMap scan completed for https://personallm.vercel.app/
+2025-07-14 05:03:49,668 - INFO - Starting WPScan: target=https://personallm.vercel.app/, arguments=--random-user-agent
+2025-07-14 05:03:49,668 - INFO - Running WPScan command: wpscan --url https://personallm.vercel.app/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-14 05:03:50,744 - INFO - WPScan completed for https://personallm.vercel.app/
+2025-07-14 05:09:54,337 - INFO - Starting vulnerability scan for https://personallm.vercel.app/
+2025-07-14 05:09:54,338 - INFO - Running Gobuster for https://personallm.vercel.app/
+2025-07-14 05:09:54,539 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://personallm.vercel.app/3cdafaa6-bc2f-4ef6-b07a-3ad32297cab3 => 403 (Length: 34277). To continue please exclude the status code or the length
+
+2025-07-14 05:09:54,540 - INFO - Vulnerability scan completed successfully
+2025-07-14 05:09:54,550 - INFO - Starting Nmap scan: original_target=https://personallm.vercel.app/, hostname=personallm.vercel.app, arguments=-F
+2025-07-14 05:09:57,048 - INFO - Scan completed for https://personallm.vercel.app/
+2025-07-14 05:09:57,062 - INFO - Starting SQLMap scan: target=https://personallm.vercel.app/, arguments=--batch --random-agent
+2025-07-14 05:09:57,064 - INFO - Running SQLMap command: python3 /opt/sqlmap/sqlmap.py --url https://personallm.vercel.app/ --batch --random-agent --text-only --output-dir /tmp --timeout 30 --threads 1 --level 1 --risk 1
+2025-07-14 05:10:00,917 - INFO - SQLMap scan completed for https://personallm.vercel.app/
+2025-07-14 05:10:00,922 - INFO - Starting WPScan: target=https://personallm.vercel.app/, arguments=--random-user-agent
+2025-07-14 05:10:00,922 - INFO - Running WPScan command: wpscan --url https://personallm.vercel.app/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-14 05:10:02,461 - INFO - WPScan completed for https://personallm.vercel.app/
+2025-07-14 05:33:01,197 - INFO - Starting vulnerability scan for https://personallm.vercel.app/
+2025-07-14 05:33:01,198 - INFO - Running Gobuster for https://personallm.vercel.app/
+2025-07-14 05:33:03,850 - INFO - Starting vulnerability scan for https://personallm.vercel.app/
+2025-07-14 05:33:03,850 - INFO - Running Gobuster for https://personallm.vercel.app/
+2025-07-14 05:33:55,211 - INFO - Vulnerability scan completed successfully
+2025-07-14 05:33:55,221 - INFO - Starting Nmap scan: original_target=https://personallm.vercel.app/, hostname=personallm.vercel.app, arguments=-F
+2025-07-14 05:33:59,206 - INFO - Scan completed for https://personallm.vercel.app/
+2025-07-14 05:33:59,211 - INFO - Starting SQLMap scan: target=https://personallm.vercel.app/, arguments=--batch --random-agent
+2025-07-14 05:33:59,211 - INFO - Running SQLMap command: python3 /opt/sqlmap/sqlmap.py --url https://personallm.vercel.app/ --batch --random-agent --text-only --output-dir /tmp --timeout 30 --threads 1 --level 1 --risk 1
+2025-07-14 05:34:02,533 - INFO - SQLMap scan completed for https://personallm.vercel.app/
+2025-07-14 05:34:02,537 - INFO - Starting WPScan: target=https://personallm.vercel.app/, arguments=--random-user-agent
+2025-07-14 05:34:02,537 - INFO - Running WPScan command: wpscan --url https://personallm.vercel.app/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-14 05:34:03,741 - INFO - WPScan completed for https://personallm.vercel.app/
+2025-07-14 05:34:13,526 - INFO - Vulnerability scan completed successfully
+2025-07-14 05:34:13,539 - INFO - Starting Nmap scan: original_target=https://personallm.vercel.app/, hostname=personallm.vercel.app, arguments=-F
+2025-07-14 05:34:16,222 - INFO - Scan completed for https://personallm.vercel.app/
+2025-07-14 05:34:16,232 - INFO - Starting SQLMap scan: target=https://personallm.vercel.app/, arguments=--batch --random-agent
+2025-07-14 05:34:16,234 - INFO - Running SQLMap command: python3 /opt/sqlmap/sqlmap.py --url https://personallm.vercel.app/ --batch --random-agent --text-only --output-dir /tmp --timeout 30 --threads 1 --level 1 --risk 1
+2025-07-14 05:34:19,053 - INFO - SQLMap scan completed for https://personallm.vercel.app/
+2025-07-14 05:34:19,056 - INFO - Starting WPScan: target=https://personallm.vercel.app/, arguments=--random-user-agent
+2025-07-14 05:34:19,056 - INFO - Running WPScan command: wpscan --url https://personallm.vercel.app/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-14 05:34:20,604 - INFO - WPScan completed for https://personallm.vercel.app/
+2025-07-14 05:36:15,993 - INFO - Starting vulnerability scan for https://personallm.vercel.app/
+2025-07-14 05:36:15,993 - INFO - Running Gobuster for https://personallm.vercel.app/
+2025-07-14 05:36:16,170 - ERROR - Gobuster scan failed: Error: the server returns a status code that matches the provided options for non existing urls. https://personallm.vercel.app/85bfad05-a046-4e0b-8a33-6cbf9cf1f7ca => 403 (Length: 34293). To continue please exclude the status code or the length
+
+2025-07-14 05:36:16,171 - INFO - Vulnerability scan completed successfully
+2025-07-14 05:36:16,178 - INFO - Starting Nmap scan: original_target=https://personallm.vercel.app/, hostname=personallm.vercel.app, arguments=-F
+2025-07-14 05:36:18,411 - INFO - Scan completed for https://personallm.vercel.app/
+2025-07-14 05:36:18,420 - INFO - Starting SQLMap scan: target=https://personallm.vercel.app/, arguments=--batch --random-agent
+2025-07-14 05:36:18,421 - INFO - Running SQLMap command: python3 /opt/sqlmap/sqlmap.py --url https://personallm.vercel.app/ --batch --random-agent --text-only --output-dir /tmp --timeout 30 --threads 1 --level 1 --risk 1
+2025-07-14 05:36:21,660 - INFO - SQLMap scan completed for https://personallm.vercel.app/
+2025-07-14 05:36:21,668 - INFO - Starting WPScan: target=https://personallm.vercel.app/, arguments=--random-user-agent
+2025-07-14 05:36:21,669 - INFO - Running WPScan command: wpscan --url https://personallm.vercel.app/ --random-user-agent --disable-tls-checks --format json --no-banner --max-threads 1 --request-timeout 30 --connect-timeout 10
+2025-07-14 05:36:23,292 - INFO - WPScan completed for https://personallm.vercel.app/

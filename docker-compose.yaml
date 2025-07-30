@@ -1,0 +1,168 @@
+version: '3.8'
+
+services:
+  # Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: vulnpilot
+      POSTGRES_USER: vulnpilot
+      POSTGRES_PASSWORD: vulnpilot_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vulnpilot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - vulnpilot-network
+
+  # Redis for caching and task queue
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - vulnpilot-network
+
+  # MongoDB for Node.js backend
+  mongodb:
+    image: mongo:6-alpine
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: vulnpilot
+      MONGO_INITDB_ROOT_PASSWORD: vulnpilot_password
+      MONGO_INITDB_DATABASE: vulnpilot
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - vulnpilot-network
+
+  # Django Backend (Security Scanning Service)
+  django-backend:
+    build: 
+      context: ./service
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./service:/app
+      - scan_results:/app/scans
+      - logs_data:/app/logs
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=postgresql://vulnpilot:vulnpilot_password@postgres:5432/vulnpilot
+      - REDIS_URL=redis://redis:6379/0
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0,django-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python3", "/app/health_check.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    networks:
+      - vulnpilot-network
+
+  # Node.js Backend (API & AI Service)
+  node-backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+      - node_logs:/app/logs
+      - node_data:/app/data
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - MONGODB_URI=mongodb://vulnpilot:vulnpilot_password@mongodb:27017/vulnpilot?authSource=admin
+      - REDIS_URL=redis://redis:6379/1
+      - DJANGO_API_URL=http://django-backend:8000
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      django-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - vulnpilot-network
+
+  # React Frontend
+  react-frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      django-backend:
+        condition: service_healthy
+      node-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - vulnpilot-network
+
+volumes:
+  postgres_data:
+    driver: local
+  mongodb_data:
+    driver: local
+  redis_data:
+    driver: local
+  scan_results:
+    driver: local
+  logs_data:
+    driver: local
+  node_logs:
+    driver: local
+  node_data:
+    driver: local
+
+networks:
+  vulnpilot-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

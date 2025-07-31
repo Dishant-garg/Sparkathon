@@ -1,0 +1,19 @@
+# Vulnpilot - Sparkathon Project
+# AI-Powered Vulnerability Detection & Security Automation Platform
+
+# Dependencies
+node_modules/
+*/node_modules/
+*/venv/
+*/env/
+*/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environment files
+.env
+*/env/
+*/venv/
+

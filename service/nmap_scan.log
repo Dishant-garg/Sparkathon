@@ -469,3 +469,4 @@ NameError: name 'format_raw_data_for_ai' is not defined
 2025-07-31 17:36:00,771 - ERROR - Invalid response from Gemini API
 2025-07-31 17:37:52,569 - INFO - Generating AI report for https://github.com/Dishant-garg/GitGrind
 2025-07-31 17:37:53,154 - ERROR - Invalid response from Gemini API
+2025-07-31 17:48:56,026 - INFO - /app/Labs/settings.py changed, reloading.

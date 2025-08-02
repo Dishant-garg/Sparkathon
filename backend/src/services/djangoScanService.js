@@ -227,6 +227,88 @@ class DjangoScanService {
   }
 
   /**
+   * Perform Nikto web vulnerability scan
+   * @param {string} url - Target URL
+   * @param {string} niktoArgs - Nikto arguments (optional)
+   * @returns {Promise<Object>} Scan results
+   */
+  async niktoScan(url, niktoArgs = '-h') {
+    const maxRetries = 3;
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`Starting Nikto scan for URL: ${url} (attempt ${attempt}/${maxRetries})`);
+        
+        const response = await axios.post(`${this.baseURL}/api/gobuster/nikto/`, {
+          url,
+          arguments: niktoArgs
+        }, {
+          timeout: 30 * 60 * 1000, // 30 minutes timeout for Nikto
+          headers: {
+            'Content-Type': 'application/json',
+            'Connection': 'keep-alive'
+          },
+          maxRedirects: 5,
+          validateStatus: function (status) {
+            return status < 500; // Accept any status code less than 500
+          }
+        });
+
+        return {
+          success: true,
+          data: response.data,
+          scanType: 'nikto',
+          target: url,
+          timestamp: new Date().toISOString()
+        };
+      } catch (error) {
+        lastError = error;
+        console.error(`Nikto scan attempt ${attempt} failed:`, error.message);
+        
+        // Check if it's a socket hangup or connection reset
+        if (error.code === 'ECONNRESET' || error.code === 'EPIPE' || 
+            error.message.includes('socket hang up') || 
+            error.message.includes('Connection reset')) {
+          console.log(`Socket error on attempt ${attempt}, retrying...`);
+          
+          // Wait before retrying (exponential backoff)
+          if (attempt < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+            continue;
+          }
+        } else {
+          // Non-socket error, don't retry
+          break;
+        }
+      }
+    }
+    
+    // All retries failed
+    console.error('All Nikto scan attempts failed:', lastError.message);
+    
+    let errorMessage = 'Unknown error';
+    if (lastError.code === 'ECONNREFUSED') {
+      errorMessage = 'Django backend is not running. Please start it with: python manage.py runserver 8000';
+    } else if (lastError.code === 'ECONNRESET' || lastError.code === 'EPIPE' || 
+               lastError.message.includes('socket hang up')) {
+      errorMessage = 'Connection lost during Nikto scan. The scan may still be running on the server.';
+    } else if (lastError.response?.data?.error) {
+      errorMessage = lastError.response.data.error;
+    } else if (lastError.message) {
+      errorMessage = lastError.message;
+    }
+    
+    return {
+      success: false,
+      error: errorMessage,
+      scanType: 'nikto',
+      target: url,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  /**
    * Health check for Django backend
    * @returns {Promise<boolean>} Django backend status
    */

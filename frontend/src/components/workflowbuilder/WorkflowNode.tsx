@@ -29,6 +29,12 @@ const WorkflowNode = memo(({ type, data, isConnectable }: NodeProps) => {
           icon: <Search className="w-5 h-5" />,
           color: "bg-pink-500",
         };
+      case "nikto":
+        return {
+          label: "Nikto",
+          icon: <Search className="w-5 h-5" />,
+          color: "bg-purple-500",
+        };
       case "nmap":
         return {
           label: "Nmap",

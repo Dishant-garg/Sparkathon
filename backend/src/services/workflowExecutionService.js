@@ -173,7 +173,7 @@ class WorkflowExecutionService {
     const executed = new Set();
 
     // First, identify scan nodes and notification nodes
-    const scanNodeTypes = ['nmap', 'gobuster', 'sqlmap', 'nikto', 'wpscan'];
+    const scanNodeTypes = ['nmap', 'gobuster', 'nikto', 'sqlmap', 'wpscan'];
     const notificationNodeTypes = ['email', 'slack', 'github-issue'];
     
     const allNodes = Array.from(graph.keys());
@@ -344,6 +344,10 @@ class WorkflowExecutionService {
 
         case "gobuster":
           return await djangoScanService.gobusterScan(targetUrl);
+
+        case "nikto":
+          const niktoArgs = node.data?.scanArgs || "-h";
+          return await djangoScanService.niktoScan(targetUrl, niktoArgs);
 
         case "sqlmap":
           const sqlmapArgs = node.data?.scanArgs || "--batch --random-agent";
@@ -750,6 +754,18 @@ class WorkflowExecutionService {
                 finding: `Exposed directories found: ${result.data.directories_found.length} directories`,
                 severity: 'Medium',
                 source: 'Gobuster'
+              });
+            }
+            break;
+
+          case 'nikto':
+            // Map Nikto findings to OWASP categories
+            if (result.data.nikto && result.data.nikto.vulnerabilities_found) {
+              findings.push({
+                category: 'A05:2021 – Security Misconfiguration',
+                finding: `Web vulnerabilities detected: ${result.data.nikto.vulnerabilities.length} issues`,
+                severity: 'Medium',
+                source: 'Nikto'
               });
             }
             break;

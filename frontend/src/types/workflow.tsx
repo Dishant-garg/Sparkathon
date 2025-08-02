@@ -6,7 +6,7 @@ export type Frequency = "2hr" | "4hr" | "6hr" | "12hr" | "1 day";
 export type NodeType =
   | "trigger"
   | "gobuster"
-  | "nkito"
+  | "nikto"
   | "nmap"
   | "sqlmap"
   | "wpscan"

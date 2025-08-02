@@ -245,26 +245,61 @@ def run_nikto(url):
                 "nikto", 
                 "-h", url, 
                 "-Format", "json", 
-                "-o", temp_output.name,  # Specify output file
-                "-timeout", "300"  # 5-minute timeout
+                "-o", temp_output.name  # Specify output file
             ]
         
             process = subprocess.run(
                 cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True,
-                timeout=600  # 10 minute total timeout
+                text=True
             )
         
         # Read the output file
         try:
             with open(temp_output.name, 'r') as f:
-                nikto_results = json.load(f)
+                file_content = f.read().strip()
+                if file_content:
+                    nikto_results = json.loads(file_content)
+                else:
+                    # Empty file, use stdout instead
+                    nikto_results = {
+                        "raw_output": process.stdout,
+                        "message": "No JSON output generated, using stdout"
+                    }
             os.unlink(temp_output.name)  # Delete temp file
-            return nikto_results
+            
+            # Ensure we return a consistent format
+            if isinstance(nikto_results, list):
+                return nikto_results
+            elif isinstance(nikto_results, dict):
+                return nikto_results
+            else:
+                return {
+                    "raw_output": str(nikto_results),
+                    "message": "Unexpected Nikto output format"
+                }
+                
+        except json.JSONDecodeError as json_error:
+            logger.warning(f"Invalid JSON from Nikto: {json_error}")
+            # Try to parse as text output instead
+            try:
+                with open(temp_output.name, 'r') as f:
+                    text_output = f.read()
+                os.unlink(temp_output.name)
+                return {
+                    "raw_output": text_output or process.stdout,
+                    "error": f"JSON parsing failed: {json_error}"
+                }
+            except Exception as text_error:
+                os.unlink(temp_output.name)
+                return {
+                    "raw_output": process.stdout,
+                    "error": f"Failed to read output: {text_error}"
+                }
         except Exception as file_error:
             logger.warning(f"Failed to read Nikto output: {file_error}")
+            os.unlink(temp_output.name)
             return {
                 "raw_output": process.stdout,
                 "error": str(file_error)
@@ -412,3 +447,96 @@ def run_wpscan(url):
             "error": str(e),
             "raw_output": None
         }
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def nikto_scan(request):
+    """
+    Dedicated endpoint for Nikto scanning
+    """
+    try:
+        data = json.loads(request.body)
+        target_url = data.get('url') or data.get('target')
+        arguments = data.get('arguments', '-h')
+        
+        if not target_url:
+            return JsonResponse({'error': 'URL/target is required'}, status=400)
+        
+        # Ensure URL has a scheme
+        if not target_url.startswith(('http://', 'https://')):
+            target_url = 'https://' + target_url
+        
+        logger.info(f"Starting Nikto scan for {target_url}")
+        
+        # Run Nikto scan to completion
+        nikto_results = run_nikto(target_url)
+        
+        # Structure the response to match expected format
+        scan_result = {
+            "nikto": {
+                "target": target_url,
+                "arguments": arguments,
+                "scan_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "status": "completed",
+                "findings": [],
+                "vulnerabilities": [],
+                "raw_output": str(nikto_results)[:2000],
+                "vulnerabilities_found": False
+            }
+        }
+        
+        # Parse Nikto results if successful
+        error_found = False
+        if isinstance(nikto_results, dict) and nikto_results.get("error"):
+            error_found = True
+            scan_result["nikto"]["status"] = "error"
+            scan_result["nikto"]["message"] = f"Nikto scan failed: {nikto_results.get('error')}"
+        elif isinstance(nikto_results, list) or (isinstance(nikto_results, dict) and not nikto_results.get("error")):
+            # Extract vulnerabilities from Nikto results
+            vulnerabilities = []
+            findings = []
+            
+            # Handle both list and dict formats
+            if isinstance(nikto_results, list):
+                # Nikto returned a list of results
+                for item in nikto_results:
+                    if isinstance(item, dict):
+                        vulnerability = {
+                            'type': 'Web Vulnerability',
+                            'finding': item.get('msg', str(item)),
+                            'severity': 'MEDIUM',  # Default severity
+                            'description': item.get('msg', str(item))
+                        }
+                        vulnerabilities.append(vulnerability)
+                        findings.append(item.get('msg', str(item)))
+            elif isinstance(nikto_results, dict):
+                # Parse Nikto JSON output (dict format)
+                for host_data in nikto_results.get('hosts', []):
+                    for item in host_data.get('vulnerabilities', []):
+                        vulnerability = {
+                            'type': 'Web Vulnerability',
+                            'finding': item.get('msg', ''),
+                            'severity': 'MEDIUM',  # Default severity
+                            'description': item.get('msg', '')
+                        }
+                        vulnerabilities.append(vulnerability)
+                        findings.append(item.get('msg', ''))
+            
+            scan_result["nikto"]["vulnerabilities"] = vulnerabilities
+            scan_result["nikto"]["findings"] = findings
+            scan_result["nikto"]["vulnerabilities_found"] = len(vulnerabilities) > 0
+            scan_result["nikto"]["message"] = f"Nikto scan completed - {len(vulnerabilities)} vulnerabilities found"
+        else:
+            # Unexpected format
+            scan_result["nikto"]["status"] = "error"
+            scan_result["nikto"]["message"] = f"Nikto scan returned unexpected format: {type(nikto_results)}"
+        
+        logger.info(f"Nikto scan completed for {target_url}")
+        return JsonResponse(scan_result, safe=False)
+        
+    except json.JSONDecodeError:
+        logger.error("Invalid JSON data received")
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        logger.exception(f"Nikto scan error: {str(e)}")
+        return JsonResponse({'error': f'Nikto scan failed: {str(e)}'}, status=500)

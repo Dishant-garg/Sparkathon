@@ -58,6 +58,7 @@ import "reactflow/dist/style.css";
 const nodeTypes: NodeTypes = {
   trigger: TriggerNode,
   gobuster: WorkflowNode,
+  nikto: WorkflowNode,
   nmap: WorkflowNode,
   sqlmap: WorkflowNode,
   wpscan: WorkflowNode,
@@ -295,6 +296,7 @@ const WorkflowBuilderContent = () => {
     if (dataSource === "Domain") {
       return [
         "gobuster",
+        "nikto",
         "nmap",
         "sqlmap",
         "wpscan",
@@ -547,7 +549,7 @@ const WorkflowBuilderContent = () => {
     if (activeDataSource === "Domain") {
       return [
         { type: "gobuster", label: "Gobuster" },
-        { type: "nkito", label: "Nkito" },
+        { type: "nikto", label: "Nikto" },
         { type: "nmap", label: "Nmap" },
         { type: "sqlmap", label: "SQLMap" },
         { type: "wpscan", label: "WPScan" },

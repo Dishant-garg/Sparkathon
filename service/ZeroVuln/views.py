@@ -525,95 +525,159 @@ def generate_ai_report(request):
             logger.warning("GEMINI_API_KEY not found, using fallback report generation")
             return generate_fallback_report(scan_results, target_url)
 
-        # Prepare scan data for AI analysis - Include ALL raw data
+        # Prepare scan data for AI analysis - Include ALL raw data including detailed Nikto results
         formatted_raw_data = format_raw_data_for_ai(scan_results)
         
-        # Create AI prompt for detailed analysis of raw data
+        # Extract detailed Nikto results for special attention
+        nikto_details = ""
+        if 'nikto_scan' in scan_results:
+            nikto_data = scan_results['nikto_scan']
+            nikto_details = f"""
+DETAILED NIKTO WEB SECURITY SCAN RESULTS:
+{json.dumps(nikto_data, indent=2)}
+"""
+        
+        # Create comprehensive AI prompt for customer-friendly analysis
         prompt = f"""
-You are a cybersecurity expert explaining security scan results to a website owner who may not be technical. 
-Your job is to translate technical security findings into plain English that anyone can understand.
+You are a senior cybersecurity consultant creating a detailed security assessment report for a business client. Your expertise spans network security, web application security, and risk management. The client is a business owner who values clear communication and actionable insights.
 
-TARGET WEBSITE: {target_url}
-SCAN DATE: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+🎯 SECURITY ASSESSMENT FOR: {target_url}
+📅 ASSESSMENT DATE: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
-Here is the complete raw scan data from multiple security tools:
+📋 COMPLETE SECURITY SCAN DATA:
+{json.dumps(formatted_raw_data, indent=2)}
 
-{formatted_raw_data}
+{nikto_details}
 
-Please create a comprehensive security report that explains everything in simple terms:
+INSTRUCTIONS: Create a comprehensive, business-focused security report that balances technical accuracy with clear communication. Make this report valuable for decision-making and budgeting.
 
-## 1. WHAT WE FOUND (Executive Summary)
-- Summarize the overall security status in 2-3 simple sentences
-- Use everyday language, not technical jargon
-- Rate the overall security: Excellent/Good/Needs Attention/Poor
+# 🛡️ EXECUTIVE SECURITY ASSESSMENT REPORT
 
-## 2. SECURITY SCAN RESULTS EXPLAINED
-For each finding, explain in simple terms:
+## 🎯 EXECUTIVE SUMMARY
+Provide a clear, executive-level assessment:
+- **Overall Security Posture**: Rate as Excellent/Good/Fair/Poor/Critical
+- **Business Risk Level**: Low/Medium/High/Critical with business impact explanation
+- **Key Findings**: 3-5 most significant discoveries in plain business language
+- **Immediate Action Required**: Yes/No with clear justification
+- **Investment Priority**: High/Medium/Low for security improvements
 
-**Port Scanning Results:**
-- What ports are open and what that means for a regular person
-- Which services are running and if they're safe
-- Example: "Port 80 is open - this is normal for websites, it's how people visit your site"
+## 🔍 DETAILED SECURITY ANALYSIS
 
-**Directory/File Discovery:**
-- What files or folders were found that shouldn't be public
-- Why this matters for security
-- Example: "We found an admin folder that anyone can access - this is like leaving your office keys on the front desk"
+### 🌐 Network Infrastructure Security (Port Scanning Results)
+Analyze ALL network findings with business context:
+- **Open Network Ports**: Explain each port in business terms
+- **Service Exposure**: What services are accessible and their security implications
+- **Attack Surface**: How exposed the website is to potential attacks
+- **Network Security Recommendations**: Specific, actionable improvements
 
-**SQL Injection Testing:**
-- Explain what SQL injection is in simple terms
-- What the test results actually mean for their website
-- Example: "We tested if hackers could trick your database into giving them information. The good news is your site seems protected, but we found some areas that need watching."
+### 🕸️ Web Application Security (Nikto & Web Vulnerability Scan)
+Provide comprehensive analysis of ALL Nikto findings:
+- **Web Server Security**: Detailed analysis of server configuration
+- **Vulnerability Assessment**: Every security issue found, explained clearly
+- **Information Disclosure**: What sensitive information is exposed
+- **Security Headers**: Missing or misconfigured security protections
+- **Authentication & Access Control**: How well the site protects access
+- **Common Web Attacks Protection**: XSS, SQL injection, etc. preparedness
 
-**WordPress Security (if applicable):**
-- What WordPress vulnerabilities mean
-- How this affects their website
-- Whether their site is actually WordPress or not
+### 📁 Content & Directory Security (Directory Discovery)
+Examine all discovered content:
+- **Exposed Files & Directories**: What shouldn't be publicly accessible
+- **Sensitive Information Exposure**: Configuration files, backups, admin areas
+- **Information Leakage Assessment**: What attackers could learn about your system
+- **Access Control Evaluation**: Whether proper restrictions are in place
 
-## 3. WHAT THIS MEANS FOR YOUR WEBSITE
-For each finding, explain:
-- What could happen if this isn't fixed
-- How serious the risk actually is
-- Real-world examples of what attackers might do
+### 💾 Database Security Assessment (SQL Injection Testing)
+Comprehensive database security review:
+- **Injection Vulnerability Testing**: Detailed results and implications
+- **Database Protection**: How well your database is secured
+- **Data Integrity**: Whether your data could be compromised
+- **Customer Data Protection**: Specific risks to customer information
 
-## 4. WHAT YOU NEED TO DO (In Order of Importance)
-- Priority 1 (Fix This Week): Most urgent issues in simple language
-- Priority 2 (Fix This Month): Important but not urgent
-- Priority 3 (Ongoing): Good security practices
+### 🔌 Content Management System Security (WordPress/CMS Analysis)
+If applicable, detailed CMS security assessment:
+- **CMS Version Security**: Whether your CMS is current and secure
+- **Plugin/Theme Vulnerabilities**: Detailed analysis of each component
+- **Update Requirements**: What needs updating and why
+- **CMS-Specific Risks**: Unique vulnerabilities to your platform
 
-For each action item, explain:
-- WHY it's important
-- WHAT will happen if you don't fix it
-- HOW urgent it really is
+## 📊 BUSINESS RISK ASSESSMENT
 
-## 5. GOOD NEWS / POSITIVE FINDINGS
-- What security measures are already working well
-- Things that are properly configured
-- Areas where the website is already secure
+### 💰 Financial Impact Analysis
+- **Potential Cost of Breach**: Data breach costs, downtime, recovery
+- **Compliance Risks**: GDPR, PCI DSS, industry-specific requirements
+- **Insurance Considerations**: How this affects cybersecurity coverage
+- **Competitive Impact**: Security as a business differentiator
 
-## IMPORTANT GUIDELINES:
-- Avoid technical terms like "heuristic tests", "URI parameters", "injectable"
-- Instead use phrases like "we tested for security holes", "website addresses", "vulnerable to attacks"
-- Explain WHY each finding matters to a business owner
-- Use analogies (like comparing website security to home security)
-- Be encouraging about fixes - explain that these are common issues with solutions
-- Give context about how serious each issue really is
+### 👥 Customer Trust & Reputation
+- **Customer Data Protection**: How well customer information is secured
+- **Brand Protection**: Reputation risks from security incidents
+- **Trust Factors**: What customers expect from your security posture
 
-Write this as if you're explaining to a small business owner who just wants to know:
-1. Is my website safe?
-2. What problems did you find?
-3. How serious are they?
-4. What do I need to do?
-5. How urgently?
+### ⚖️ Legal & Regulatory Compliance
+- **Data Protection Requirements**: Legal obligations for data security
+- **Industry Standards**: Compliance with relevant security frameworks
+- **Liability Assessment**: Legal exposure from current security posture
 
-Use a friendly, professional tone that builds confidence rather than fear.
+## 🚀 STRATEGIC SECURITY ROADMAP
+
+### 🚨 IMMEDIATE ACTIONS (0-30 Days)
+List critical issues requiring immediate attention:
+- **Critical Vulnerabilities**: Must-fix security holes
+- **Emergency Mitigations**: Quick fixes to reduce immediate risk
+- **Incident Response**: Steps if an attack occurs
+
+### ⚡ SHORT-TERM IMPROVEMENTS (1-3 Months)
+Important security enhancements:
+- **Security Hardening**: Strengthening current protections
+- **Monitoring Implementation**: Better visibility into security status
+- **Process Improvements**: Security best practices adoption
+
+### 🎯 LONG-TERM SECURITY STRATEGY (3-12 Months)
+Strategic security investments:
+- **Advanced Security Measures**: Next-level protection implementation
+- **Security Culture**: Building security awareness and practices
+- **Continuous Improvement**: Ongoing security maturity development
+
+## ✅ POSITIVE SECURITY FINDINGS
+Highlight existing security strengths:
+- **Effective Security Controls**: What's already working well
+- **Good Security Practices**: Positive configurations and measures
+- **Competitive Advantages**: Security features that set you apart
+
+## 📞 NEXT STEPS & RECOMMENDATIONS
+
+### 🤝 Implementation Support
+- **Technical Implementation**: Who should handle each recommendation
+- **Budget Planning**: Cost estimates for security improvements
+- **Timeline Recommendations**: Realistic implementation schedules
+- **Success Metrics**: How to measure security improvement progress
+
+### 📈 Ongoing Security Management
+- **Regular Assessment Schedule**: How often to repeat security scans
+- **Monitoring Recommendations**: Continuous security visibility
+- **Incident Response Planning**: Preparation for security events
+- **Staff Training**: Security awareness for your team
+
+TONE & STYLE REQUIREMENTS:
+- Write as a trusted security advisor, not an alarmist
+- Use business language that executives understand
+- Provide specific, actionable recommendations
+- Balance technical accuracy with clear communication
+- Focus on business value and risk management
+- Be encouraging about security improvements
+- Explain the "why" behind each recommendation
+- Use analogies when helpful (home security, business insurance, etc.)
+- Quantify risks and benefits where possible
+- Maintain professional credibility while being accessible
+
+Create a report that serves as both a security assessment and a business planning document.
 """
 
         try:
             # Call Gemini API using Google's generative AI
             cmd = [
                 'curl', '-X', 'POST',
-                f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={gemini_api_key}',
+                f'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key={gemini_api_key}',
                 '-H', 'Content-Type: application/json',
                 '-d', json.dumps({
                     "contents": [{
@@ -622,11 +686,31 @@ Use a friendly, professional tone that builds confidence rather than fear.
                         }]
                     }],
                     "generationConfig": {
-                        "temperature": 0.1,  # Lower temperature for more focused analysis
-                        "topK": 32,
-                        "topP": 0.8,
-                        "maxOutputTokens": 8192  # Increased for detailed analysis
-                    }
+                        "temperature": 0.4,  # Increased for more creative and comprehensive analysis
+                        "topK": 40,
+                        "topP": 0.9,
+                        "maxOutputTokens": 32768,  # Increased to 32K for comprehensive business reports
+                        "candidateCount": 1,
+                        "stopSequences": []
+                    },
+                    "safetySettings": [
+                        {
+                            "category": "HARM_CATEGORY_HARASSMENT",
+                            "threshold": "BLOCK_NONE"
+                        },
+                        {
+                            "category": "HARM_CATEGORY_HATE_SPEECH", 
+                            "threshold": "BLOCK_NONE"
+                        },
+                        {
+                            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                            "threshold": "BLOCK_NONE"
+                        },
+                        {
+                            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                            "threshold": "BLOCK_NONE"
+                        }
+                    ]
                 })
             ]
 
@@ -634,7 +718,7 @@ Use a friendly, professional tone that builds confidence rather than fear.
                 cmd,
                 capture_output=True,
                 text=True,
-                timeout=60  # Increased timeout for detailed analysis
+                timeout=180  # Increased timeout for comprehensive 32K token analysis
             )
 
             if result.returncode == 0:
@@ -982,16 +1066,84 @@ def format_raw_data_for_ai(scan_results):
                         "details": vuln
                     })
         
-        elif scan_type.lower() == "nikto_scan":
-            # Nikto specific processing
-            if "findings" in scan_data:
-                for finding in scan_data["findings"]:
+        elif scan_type.lower() == "nikto":
+            # Enhanced Nikto specific processing for comprehensive AI analysis
+            nikto_data = scan_data.get("data", scan_data)
+            
+            # Process Nikto findings with detailed categorization
+            if "findings" in nikto_data:
+                for finding in nikto_data["findings"]:
+                    # Categorize Nikto findings by severity and type
+                    finding_msg = finding.get("msg", "")
+                    finding_uri = finding.get("uri", "")
+                    finding_method = finding.get("method", "GET")
+                    
+                    # Determine severity based on finding content
+                    severity = "Low"
+                    finding_category = "Information Disclosure"
+                    
+                    if any(keyword in finding_msg.lower() for keyword in ['admin', 'password', 'login', 'authentication', 'bypass']):
+                        severity = "High"
+                        finding_category = "Authentication Issues"
+                    elif any(keyword in finding_msg.lower() for keyword in ['sql', 'injection', 'xss', 'script', 'exploit']):
+                        severity = "Critical"
+                        finding_category = "Injection Vulnerabilities"
+                    elif any(keyword in finding_msg.lower() for keyword in ['config', 'configuration', 'backup', 'sensitive']):
+                        severity = "Medium"
+                        finding_category = "Configuration Issues"
+                    elif any(keyword in finding_msg.lower() for keyword in ['directory', 'file', 'listing', 'browse']):
+                        severity = "Medium"
+                        finding_category = "Information Disclosure"
+                    elif any(keyword in finding_msg.lower() for keyword in ['version', 'banner', 'server', 'header']):
+                        severity = "Low"
+                        finding_category = "Information Leakage"
+                    
                     scan_info["findings"].append({
-                        "type": "Web Server Issue",
-                        "message": finding.get("msg", ""),
-                        "uri": finding.get("uri", ""),
-                        "method": finding.get("method", ""),
+                        "type": "Web Security Finding",
+                        "category": finding_category,
+                        "message": finding_msg,
+                        "uri": finding_uri,
+                        "method": finding_method,
+                        "severity": severity,
+                        "business_impact": get_business_impact_for_finding(finding_category, severity),
                         "details": finding
+                    })
+                    
+                    # If it's high severity, also add to vulnerabilities
+                    if severity in ["High", "Critical"]:
+                        scan_info["vulnerabilities"].append({
+                            "type": f"Nikto {finding_category}",
+                            "finding": finding_msg,
+                            "severity": severity,
+                            "location": finding_uri,
+                            "method": finding_method,
+                            "business_impact": get_business_impact_for_finding(finding_category, severity),
+                            "remediation_priority": "Immediate" if severity == "Critical" else "High"
+                        })
+            
+            # Process vulnerabilities if present in different format
+            if "vulnerabilities" in nikto_data:
+                for vuln in nikto_data["vulnerabilities"]:
+                    scan_info["vulnerabilities"].append({
+                        "type": "Web Application Vulnerability",
+                        "finding": vuln.get("msg", vuln.get("description", "")),
+                        "severity": vuln.get("severity", "Medium"),
+                        "uri": vuln.get("uri", ""),
+                        "method": vuln.get("method", ""),
+                        "details": vuln
+                    })
+            
+            # Parse raw Nikto output for additional insights
+            raw_output = nikto_data.get("raw_output", "")
+            if raw_output:
+                nikto_raw_findings = parse_nikto_raw_output(raw_output)
+                for raw_finding in nikto_raw_findings:
+                    scan_info["findings"].append({
+                        "type": "Raw Nikto Finding",
+                        "message": raw_finding.get("finding", ""),
+                        "severity": raw_finding.get("severity", "Low"),
+                        "source": "raw_parse",
+                        "details": raw_finding
                     })
         
         # Extract general errors and warnings from raw output
@@ -1284,3 +1436,83 @@ def get_positive_findings(scan_results, risk_level):
         formatted += "we found issues, but they can be fixed!"
     
     return formatted
+
+
+def get_business_impact_for_finding(finding_category, severity):
+    """Get business impact explanation for a security finding"""
+    impact_map = {
+        "Authentication Issues": {
+            "Critical": "Unauthorized access to admin areas could lead to complete website compromise",
+            "High": "Weak authentication could allow unauthorized access to sensitive areas",
+            "Medium": "Authentication weaknesses could be exploited by determined attackers",
+            "Low": "Minor authentication concerns that should be monitored"
+        },
+        "Injection Vulnerabilities": {
+            "Critical": "Database injection could expose all customer data and allow complete system compromise",
+            "High": "Code injection vulnerabilities could allow data theft or website defacement",
+            "Medium": "Potential injection points that could be exploited with advanced techniques",
+            "Low": "Minor injection risks that are difficult to exploit"
+        },
+        "Configuration Issues": {
+            "Critical": "Server misconfiguration exposes sensitive system information",
+            "High": "Configuration problems could reveal sensitive business information",
+            "Medium": "Suboptimal configuration that could aid attackers in reconnaissance",
+            "Low": "Minor configuration improvements recommended for security best practices"
+        },
+        "Information Disclosure": {
+            "Critical": "Sensitive business or customer data is publicly accessible",
+            "High": "Important system information is exposed that could aid attackers",
+            "Medium": "Some internal information is visible that should be protected",
+            "Low": "Minor information leakage with minimal security impact"
+        },
+        "Information Leakage": {
+            "Critical": "Critical system details are exposed publicly",
+            "High": "Server information could help attackers plan targeted attacks",
+            "Medium": "Version information might reveal known vulnerabilities",
+            "Low": "Basic server information is visible but poses minimal risk"
+        }
+    }
+    
+    return impact_map.get(finding_category, {}).get(severity, "Security finding requires evaluation")
+
+
+def parse_nikto_raw_output(raw_output):
+    """
+    Parse raw Nikto output to extract vulnerabilities and findings
+    """
+    findings = []
+    if not raw_output:
+        return findings
+        
+    lines = raw_output.split('\n')
+    
+    for line in lines:
+        line = line.strip()
+        if not line or line.startswith('-') or line.startswith('='):
+            continue
+            
+        # Look for Nikto findings that start with + 
+        if line.startswith('+'):
+            # Extract useful information from Nikto findings
+            finding_text = line[1:].strip()  # Remove the + prefix
+            
+            # Skip generic headers and noise
+            if any(skip in finding_text.lower() for skip in ['target ip:', 'host:', 'start time:', 'server:', 'retrieved']):
+                continue
+                
+            # Determine severity based on content
+            severity = "Low"  # Default
+            if any(keyword in finding_text.lower() for keyword in ['admin', 'password', 'login', 'sql', 'xss', 'injection', 'exploit']):
+                severity = "High"
+            elif any(keyword in finding_text.lower() for keyword in ['config', 'error', 'backup', 'disclosure', 'access']):
+                severity = "Medium"
+            
+            findings.append({
+                "type": "Raw Nikto Finding",
+                "finding": finding_text,
+                "severity": severity,
+                "source": "nikto_raw_parse",
+                "details": {"raw_line": line}
+            })
+    
+    return findings

@@ -33,12 +33,12 @@ Vulnpilot is a comprehensive security automation platform that combines advanced
 ### Project Structure
 ```
 Sparkathon/
-├── Django-backend/          # Security scanning engine
-├── Node-backend/           # API & AI service
-├── React-frontend/        # User interface
+├── service/              # Security scanning engine
+├── backend/              # API & AI service
+├── frontend/             # User interface
 ├── Makefile              # Build automation
 ├── docker-compose.yaml   # Multi-service orchestration
-└── .gitignore           # Comprehensive exclusions
+└── .gitignore            # Comprehensive exclusions
 ```
 
 ## 🚀 Quick Start
@@ -147,7 +147,7 @@ VulnPilot can send security reports via email. To enable this feature:
 
 ### Core Commands
 ```bash
-make help                 # Show all available commands
+make help                # Show all available commands
 make setup               # Complete setup (first time)
 make dev                 # Start development servers
 make start               # Start with Docker

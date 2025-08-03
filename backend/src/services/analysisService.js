@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 let groq = null;
+let gemini = null;
 
 // Initialize Groq client dynamically
 async function initGroq() {
@@ -13,11 +14,25 @@ async function initGroq() {
   return groq;
 }
 
-// Constants for handling large code
-const MAX_CHARS_PER_REQUEST = 6000; // More conservative limit for Groq API
-const MAX_TOKENS_PER_REQUEST = 1500; // More conservative token limit
-const MAX_FILES_TO_PROCESS = 3; // Maximum files to analyze at once
-const MAX_FILE_SIZE = 1000; // Maximum characters per file after summarization
+async function initGemini() {
+  if (!gemini) {
+    const { GoogleGenerativeAI } = await import("@google/generative-ai");
+    gemini = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  }
+  return gemini;
+}
+
+// // Constants for handling large code
+// const MAX_CHARS_PER_REQUEST = 6000; // More conservative limit for Groq API
+// const MAX_TOKENS_PER_REQUEST = 1500; // More conservative token limit
+// const MAX_FILES_TO_PROCESS = 3; // Maximum files to analyze at once
+// const MAX_FILE_SIZE = 1000; // Maximum characters per file after summarization
+
+const MAX_CHARS_PER_REQUEST = 3_000_000;   // ~3 million chars (roughly, very generous for 1M tokens)
+const MAX_TOKENS_PER_REQUEST = 950_000;    // Keep some buffer under 1M tokens max context
+const MAX_FILES_TO_PROCESS = 20;            // You can process more files in one go
+const MAX_FILE_SIZE = 100_000;               // Allow files up to 100k chars before summarizing
+
 
 /**
  * Estimates the size of text in characters and tokens
@@ -247,6 +262,42 @@ async function analyzeCode(codeSnippet, language = "") {
     throw error;
   }
 }
+
+async function analyzeCodeGemini(codeSnippet, language = "") {
+  try {
+    console.log("Starting Gemini code analysis...");
+    const geminiClient = await initGemini();
+    const model = geminiClient.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    const { chars, estimatedTokens } = estimateSize(codeSnippet);
+    console.log(`Code analysis request: ${chars} chars, ~${estimatedTokens} tokens`);
+
+    // Optional: Warn if you're getting close to the 1M token context
+    if (estimatedTokens > 950000) {
+      console.warn("⚠️ Input is approaching Gemini's context window limit (1M tokens). Consider reducing input size.");
+    }
+
+    const prompt = generateCodeAnalysisPrompt(codeSnippet, language);
+
+    // const result = await model.generateContent([
+    //   { role: "user", parts: [{ text: prompt }] }
+    // ]);
+    const result = await model.generateContent({
+      contents: [
+        {
+          parts: [{ text: prompt }]
+        }
+      ]
+    });
+
+    return result.response.text();
+
+  } catch (error) {
+    console.error("Error in analyzeCode with Gemini:", error);
+    throw error;
+  }
+}
+
 
 /**
  * Analyzes code in chunks when it's too large for a single request.
@@ -571,4 +622,147 @@ async function getQueryAboutCode(codeFiles, question = "") {
   }
 }
 
-module.exports = { analyzeCode, getQueryAboutCode };
+
+async function getQueryAboutCodeGemini(codeFiles, question = "") {
+  try {
+    console.log("Starting Gemini code analysis...");
+    const geminiClient = await initGemini();
+    const model = geminiClient.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    // Combine all file contents for size estimation
+    const totalContent = codeFiles.map(f => f.content).join('\n');
+    const { chars, estimatedTokens } = estimateSize(totalContent);
+
+    console.log(`Code query request: ${chars} chars, ~${estimatedTokens} tokens across ${codeFiles.length} files`);
+
+    let processedFiles = codeFiles;
+    let wasModified = false;
+
+    // Aggressive filtering for extremely large codebases (>1M chars)
+    if (chars > 1_000_000) {
+      console.log("Extremely large codebase detected, using aggressive filtering...");
+
+      let relevantFiles = codeFiles;
+
+      if (question) {
+        const questionWords = question.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+        relevantFiles = codeFiles
+          .map(file => {
+            let score = 0;
+            const fileName = file.path.toLowerCase();
+            const fileContent = file.content.toLowerCase();
+
+            questionWords.forEach(word => {
+              if (fileName.includes(word)) score += 10;
+              if (fileContent.includes(word)) score += 1;
+            });
+
+            if (fileName.includes('main') || fileName.includes('index') || fileName.includes('app')) score += 5;
+            if (fileName.includes('controller') || fileName.includes('service') || fileName.includes('model')) score += 3;
+            if (fileName.includes('route') || fileName.includes('api')) score += 3;
+
+            return { ...file, relevanceScore: score };
+          })
+          .sort((a, b) => b.relevanceScore - a.relevanceScore)
+          .slice(0, 5);
+      } else {
+        relevantFiles = codeFiles
+          .filter(file => {
+            const fileName = file.path.toLowerCase();
+            return ['main', 'index', 'app', 'controller', 'service', 'model', 'route', 'api'].some(key => fileName.includes(key));
+          })
+          .slice(0, 3);
+      }
+
+      processedFiles = relevantFiles;
+      wasModified = true;
+      console.log(`Filtered down to ${processedFiles.length} most relevant files`);
+    }
+
+    // Summarize large files (if > MAX_FILE_SIZE)
+    processedFiles = processedFiles.map(file => {
+      if (file.content.length > MAX_FILE_SIZE) {
+        return {
+          ...file,
+          content: summarizeCode(file.content, detectLanguage(file.path), MAX_FILE_SIZE),
+        };
+      }
+      return file;
+    });
+
+    // Limit number of files to process
+    if (processedFiles.length > MAX_FILES_TO_PROCESS) {
+      processedFiles = processedFiles.slice(0, MAX_FILES_TO_PROCESS);
+      wasModified = true;
+      console.log(`Limited to ${MAX_FILES_TO_PROCESS} files for processing`);
+    }
+
+    // Check final content size
+    let finalContent = processedFiles.map(f => f.content).join('\n');
+    let { chars: finalChars, estimatedTokens: finalTokens } = estimateSize(finalContent);
+    console.log(`Final content size: ${finalChars} chars, ~${finalTokens} tokens across ${processedFiles.length} files`);
+
+    // If still too large for the Gemini 1M token limit, apply aggressive summarization
+    if (finalTokens > 950_000) {
+      console.log('Content still too large, applying aggressive summarization...');
+      processedFiles = processedFiles.map(file => ({
+        ...file,
+        content: summarizeCode(file.content, detectLanguage(file.path), MAX_FILE_SIZE / 2),
+      }));
+
+      finalContent = processedFiles.map(f => f.content).join('\n');
+      ({ chars: finalChars, estimatedTokens: finalTokens } = estimateSize(finalContent));
+      console.log(`After aggressive summarization: ${finalChars} chars, ~${finalTokens} tokens`);
+
+      if (finalTokens > 1_000_000) {
+        throw new Error(`Codebase is still too large after optimization (${finalTokens} tokens). Please ask about specific files or use more targeted queries.`);
+      }
+      wasModified = true;
+    }
+
+    const prompt = generateAnswerCodeQueriesPrompt(processedFiles, question);
+
+    // Timeout helper to avoid hanging
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Request timeout')), 60000); // 60 seconds timeout
+    });
+
+    // const analysisPromise = model.generateContent([
+    //   { role: "user", parts: [{ text: prompt }] }
+    // ]);
+    const analysisPromise = model.generateContent({
+      contents: [
+        {
+          parts: [{ text: prompt }]
+        }
+      ]
+    });
+
+
+    const result = await Promise.race([analysisPromise, timeoutPromise]);
+
+    let output = result.response.text();
+
+    if (wasModified) {
+      try {
+        const parsed = JSON.parse(output);
+        parsed.disclaimer = `Note: Analysis performed on ${processedFiles.length} out of ${codeFiles.length} files (${Math.round(finalChars / chars * 100)}% of original content). Files were filtered and summarized due to size limitations.`;
+        output = JSON.stringify(parsed, null, 2);
+      } catch {
+        output += `\n\nNote: Analysis performed on ${processedFiles.length} out of ${codeFiles.length} files. Content was reduced due to size limitations.`;
+      }
+    }
+
+    return output;
+  } catch (error) {
+    console.error("Error in getQueryAboutCode with Gemini:", error);
+
+    if (error.message.includes('timeout')) {
+      throw new Error('Analysis request timed out. Try more targeted queries.');
+    }
+
+    throw error;
+  }
+}
+module.exports = { analyzeCode, getQueryAboutCode, 
+                  analyzeCodeGemini, getQueryAboutCodeGemini };
